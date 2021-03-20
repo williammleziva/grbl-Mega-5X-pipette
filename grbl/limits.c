@@ -195,6 +195,7 @@ uint8_t limits_get_state()
     uint8_t limit_state_min = 0;
     uint8_t pin;
     uint8_t idx;
+    uint8_t unused_bits = 0xff - (1<<N_AXIS) + 1;
     #ifdef INVERT_LIMIT_PIN_MASK
       #error "INVERT_LIMIT_PIN_MASK is not implemented, use INVERT_<MAX|MIN>_LIMIT_PIN_MASK"
     #endif
@@ -217,7 +218,7 @@ uint8_t limits_get_state()
       }
     }
     if (bit_istrue(settings.flags,BITFLAG_INVERT_LIMIT_PINS)) {
-      return(~(limit_state_max & limit_state_min));
+      return(~((limit_state_max & limit_state_min) | unused_bits));
     } else {
       return(limit_state_max | limit_state_min);
     }
