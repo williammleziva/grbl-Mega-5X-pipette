@@ -1,12 +1,13 @@
 /***********************************************************************
-This sketch compiles and uploads Grbl to your 328p-based Arduino! 
+This sketch compiles and uploads Grbl to your Mega2560 Arduino board! 
 
 To use:
 - First make sure you have imported Grbl source code into your Arduino
-  IDE. There are details on our Github website on how to do this.
+  IDE. See more details on the Github wiki page of grbl-Mega-5X:
+  https://github.com/fra589/grbl-Mega-5X/wiki/Compiling-grbl-Mega-5X
 
 - Select your Arduino Board and Serial Port in the Tools drop-down menu.
-  NOTE: Grbl only officially supports 328p-based Arduinos, like the Uno.
+  NOTE: grbl-Mega-5X only officially supports Mega2560 Arduino boards.
   Using other boards will likely not work!
 
 - Then just click 'Upload'. That's it!
