@@ -48,7 +48,7 @@
 #define N_AXIS_LINEAR 3     // Number of linears axis
 
 #define AXIS_1 0        // Axis indexing value. Must start with 0 and be continuous.
-#define AXIS_1_NAME 'X' // Axis names must be in X, Y, Z, A, B, C, U, V & W.
+#define AXIS_1_NAME 'X' // Axis names must be in X, Y, Z, A, B, C, U, V, W, D, E & H.
 #define AXIS_2 1
 #define AXIS_2_NAME 'Y'
 #define AXIS_3 2
@@ -84,9 +84,10 @@
 // the order of their number. Some graphical interface are not able to affect axis values reported
 // by Grbl to the correct axis name.
 // Uncomment to enable sorting of axis values by axis_names rather than by axis number. Default disabled.
-// If this option is enabled, the sorting order will be X, Y, Z, U, V, W, A, B and C as defined below.
+// If this option is enabled, the sorting order will be X, Y, Z, U, V, W, A, B, C, D, E & H 
+// as defined below.
 //#define SORT_REPORT_BY_AXIS_NAME
-//#define AXIS_NAME_SORT_ORDER {'X', 'Y', 'Z', 'U', 'V', 'W', 'A', 'B', 'C'}
+//#define AXIS_NAME_SORT_ORDER {'X', 'Y', 'Z', 'U', 'V', 'W', 'A', 'B', 'C', 'D', 'E', 'H'}
 
 #ifdef SORT_REPORT_BY_AXIS_NAME
   #ifndef AXIS_NAME_SORT_ORDER

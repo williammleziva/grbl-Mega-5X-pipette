@@ -47,6 +47,7 @@
 #define EXEC_ALARM_HOMING_FAIL_DOOR      7
 #define EXEC_ALARM_HOMING_FAIL_PULLOFF   8
 #define EXEC_ALARM_HOMING_FAIL_APPROACH  9
+#define EXEC_ALARM_HOMING_FAIL_TRAVEL   10
 
 // Override bit maps. Realtime bitflags to control feed, rapid, spindle, and coolant overrides.
 // Spindle/coolant and feed/rapids are separated into two controlling flag variables.
@@ -155,6 +156,9 @@ extern uint8_t axis_C_mask; // Global mask for axis C bits
 extern uint8_t axis_U_mask; // Global mask for axis A bits
 extern uint8_t axis_V_mask; // Global mask for axis B bits
 extern uint8_t axis_W_mask; // Global mask for axis C bits
+extern uint8_t axis_D_mask; // Global mask for axis A bits
+extern uint8_t axis_E_mask; // Global mask for axis B bits
+extern uint8_t axis_H_mask; // Global mask for axis C bits
 extern unsigned char axis_name[N_AXIS]; // Global table of axis names
 #ifdef DEBUG
   #define EXEC_DEBUG_REPORT  bit(0)

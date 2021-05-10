@@ -80,6 +80,7 @@ uint8_t gc_execute_line(char *line)
   uint8_t axis_0, axis_1, axis_linear;
   uint8_t axis_a, axis_b, axis_c;
   uint8_t axis_u, axis_v, axis_w;
+  uint8_t axis_d, axis_e, axis_h;
   uint8_t axis_0_mask = 0;
   uint8_t axis_1_mask = 0;
   uint8_t axis_linear_mask = 0;
@@ -89,6 +90,9 @@ uint8_t gc_execute_line(char *line)
   uint8_t axis_u_mask = 0;
   uint8_t axis_v_mask = 0;
   uint8_t axis_w_mask = 0;
+  uint8_t axis_d_mask = 0;
+  uint8_t axis_e_mask = 0;
+  uint8_t axis_h_mask = 0;
   uint8_t coord_select = 0; // Tracks G10 P coordinate selection for execution
 
   // Initialize bitflag tracking variables for axis indices compatible operations.
@@ -359,7 +363,7 @@ uint8_t gc_execute_line(char *line)
             if (value > MAX_TOOL_NUMBER) { FAIL(STATUS_GCODE_MAX_VALUE_EXCEEDED); }
             gc_block.values.t = int_value;
             break;
-          // case 'X', 'Y', 'Z', 'A', 'B', 'C', 'U', 'V' or 'W' depending of AXIS_*_NAME.
+          // case 'X', 'Y', 'Z', 'A', 'B', 'C', 'U', 'V', 'W', 'D', 'E' or 'H' depending of AXIS_*_NAME.
           // case imposible because same name can be used more than one for axis cloning
           // case AXIS_1_NAME: case AXIS_2_NAME: case AXIS_3_NAME: case AXIS_4_NAME: case AXIS_5_NAME: case AXIS_6_NAME:
           default:
@@ -572,6 +576,9 @@ uint8_t gc_execute_line(char *line)
         else if (AXIS_4_NAME == 'U') { axis_u_mask |= (1<<AXIS_4); axis_u = AXIS_4; }
         else if (AXIS_4_NAME == 'V') { axis_v_mask |= (1<<AXIS_4); axis_v = AXIS_4; }
         else if (AXIS_4_NAME == 'W') { axis_w_mask |= (1<<AXIS_4); axis_w = AXIS_4; }
+        else if (AXIS_4_NAME == 'D') { axis_d_mask |= (1<<AXIS_4); axis_d = AXIS_4; }
+        else if (AXIS_4_NAME == 'E') { axis_e_mask |= (1<<AXIS_4); axis_e = AXIS_4; }
+        else if (AXIS_4_NAME == 'H') { axis_h_mask |= (1<<AXIS_4); axis_h = AXIS_4; }
       #endif
       #ifdef AXIS_5
         if (AXIS_5_NAME == 'Z') { axis_linear_mask |= (1<<AXIS_5); axis_linear = AXIS_5; }
@@ -581,6 +588,9 @@ uint8_t gc_execute_line(char *line)
         else if (AXIS_5_NAME == 'U') { axis_u_mask |= (1<<AXIS_5); axis_u = AXIS_5; }
         else if (AXIS_5_NAME == 'V') { axis_v_mask |= (1<<AXIS_5); axis_v = AXIS_5; }
         else if (AXIS_5_NAME == 'W') { axis_w_mask |= (1<<AXIS_5); axis_w = AXIS_5; }
+        else if (AXIS_5_NAME == 'D') { axis_d_mask |= (1<<AXIS_5); axis_d = AXIS_5; }
+        else if (AXIS_5_NAME == 'E') { axis_e_mask |= (1<<AXIS_5); axis_e = AXIS_5; }
+        else if (AXIS_5_NAME == 'H') { axis_h_mask |= (1<<AXIS_5); axis_h = AXIS_5; }
       #endif
       #ifdef AXIS_6
         if (AXIS_6_NAME == 'Z') { axis_linear_mask |= (1<<AXIS_6); axis_linear = AXIS_6; }
@@ -590,6 +600,9 @@ uint8_t gc_execute_line(char *line)
         else if (AXIS_6_NAME == 'U') { axis_u_mask |= (1<<AXIS_6); axis_u = AXIS_6; }
         else if (AXIS_6_NAME == 'V') { axis_v_mask |= (1<<AXIS_6); axis_v = AXIS_6; }
         else if (AXIS_6_NAME == 'W') { axis_w_mask |= (1<<AXIS_6); axis_w = AXIS_6; }
+        else if (AXIS_6_NAME == 'D') { axis_d_mask |= (1<<AXIS_6); axis_d = AXIS_6; }
+        else if (AXIS_6_NAME == 'E') { axis_e_mask |= (1<<AXIS_6); axis_e = AXIS_6; }
+        else if (AXIS_6_NAME == 'H') { axis_h_mask |= (1<<AXIS_6); axis_h = AXIS_6; }
       #endif
       break;
 
@@ -631,6 +644,9 @@ uint8_t gc_execute_line(char *line)
         else if (AXIS_4_NAME == 'U') { axis_u_mask |= (1<<AXIS_4); axis_u = AXIS_4; }
         else if (AXIS_4_NAME == 'V') { axis_v_mask |= (1<<AXIS_4); axis_v = AXIS_4; }
         else if (AXIS_4_NAME == 'W') { axis_w_mask |= (1<<AXIS_4); axis_w = AXIS_4; }
+        else if (AXIS_4_NAME == 'D') { axis_d_mask |= (1<<AXIS_4); axis_d = AXIS_4; }
+        else if (AXIS_4_NAME == 'E') { axis_e_mask |= (1<<AXIS_4); axis_e = AXIS_4; }
+        else if (AXIS_4_NAME == 'H') { axis_h_mask |= (1<<AXIS_4); axis_h = AXIS_4; }
       #endif
       #ifdef AXIS_5
         if (AXIS_5_NAME == 'Y') { axis_linear_mask |= (1<<AXIS_5); axis_linear = AXIS_5; }
@@ -640,6 +656,9 @@ uint8_t gc_execute_line(char *line)
         else if (AXIS_5_NAME == 'U') { axis_u_mask |= (1<<AXIS_5); axis_u = AXIS_5; }
         else if (AXIS_5_NAME == 'V') { axis_v_mask |= (1<<AXIS_5); axis_v = AXIS_5; }
         else if (AXIS_5_NAME == 'W') { axis_w_mask |= (1<<AXIS_5); axis_w = AXIS_5; }
+        else if (AXIS_5_NAME == 'D') { axis_d_mask |= (1<<AXIS_5); axis_d = AXIS_5; }
+        else if (AXIS_5_NAME == 'E') { axis_e_mask |= (1<<AXIS_5); axis_e = AXIS_5; }
+        else if (AXIS_5_NAME == 'H') { axis_h_mask |= (1<<AXIS_5); axis_h = AXIS_5; }
       #endif
       #ifdef AXIS_6
         if (AXIS_6_NAME == 'Y') { axis_linear_mask |= (1<<AXIS_6); axis_linear = AXIS_6; }
@@ -649,6 +668,9 @@ uint8_t gc_execute_line(char *line)
         else if (AXIS_6_NAME == 'U') { axis_u_mask |= (1<<AXIS_6); axis_u = AXIS_6; }
         else if (AXIS_6_NAME == 'V') { axis_v_mask |= (1<<AXIS_6); axis_v = AXIS_6; }
         else if (AXIS_6_NAME == 'W') { axis_w_mask |= (1<<AXIS_6); axis_w = AXIS_6; }
+        else if (AXIS_6_NAME == 'D') { axis_d_mask |= (1<<AXIS_6); axis_d = AXIS_6; }
+        else if (AXIS_6_NAME == 'E') { axis_e_mask |= (1<<AXIS_6); axis_e = AXIS_6; }
+        else if (AXIS_6_NAME == 'H') { axis_h_mask |= (1<<AXIS_6); axis_h = AXIS_6; }
       #endif
       break;
 
@@ -690,6 +712,9 @@ uint8_t gc_execute_line(char *line)
         else if (AXIS_4_NAME == 'U') { axis_u_mask |= (1<<AXIS_4); axis_u = AXIS_4; }
         else if (AXIS_4_NAME == 'V') { axis_v_mask |= (1<<AXIS_4); axis_v = AXIS_4; }
         else if (AXIS_4_NAME == 'W') { axis_w_mask |= (1<<AXIS_4); axis_w = AXIS_4; }
+        else if (AXIS_4_NAME == 'D') { axis_d_mask |= (1<<AXIS_4); axis_d = AXIS_4; }
+        else if (AXIS_4_NAME == 'E') { axis_e_mask |= (1<<AXIS_4); axis_e = AXIS_4; }
+        else if (AXIS_4_NAME == 'H') { axis_h_mask |= (1<<AXIS_4); axis_h = AXIS_4; }
       #endif
       #ifdef AXIS_5
         if (AXIS_5_NAME == 'X') { axis_linear_mask |= (1<<AXIS_5); axis_linear = AXIS_5; }
@@ -699,6 +724,9 @@ uint8_t gc_execute_line(char *line)
         else if (AXIS_5_NAME == 'U') { axis_u_mask |= (1<<AXIS_5); axis_u = AXIS_5; }
         else if (AXIS_5_NAME == 'V') { axis_v_mask |= (1<<AXIS_5); axis_v = AXIS_5; }
         else if (AXIS_5_NAME == 'W') { axis_w_mask |= (1<<AXIS_5); axis_w = AXIS_5; }
+        else if (AXIS_5_NAME == 'D') { axis_d_mask |= (1<<AXIS_5); axis_d = AXIS_5; }
+        else if (AXIS_5_NAME == 'E') { axis_e_mask |= (1<<AXIS_5); axis_e = AXIS_5; }
+        else if (AXIS_5_NAME == 'H') { axis_h_mask |= (1<<AXIS_5); axis_h = AXIS_5; }
       #endif
       #ifdef AXIS_6
         if (AXIS_6_NAME == 'X') { axis_linear_mask |= (1<<AXIS_6); axis_linear = AXIS_6; }
@@ -708,6 +736,9 @@ uint8_t gc_execute_line(char *line)
         else if (AXIS_6_NAME == 'U') { axis_u_mask |= (1<<AXIS_6); axis_u = AXIS_6; }
         else if (AXIS_6_NAME == 'V') { axis_v_mask |= (1<<AXIS_6); axis_v = AXIS_6; }
         else if (AXIS_6_NAME == 'W') { axis_w_mask |= (1<<AXIS_6); axis_w = AXIS_6; }
+        else if (AXIS_6_NAME == 'D') { axis_d_mask |= (1<<AXIS_6); axis_d = AXIS_6; }
+        else if (AXIS_6_NAME == 'E') { axis_e_mask |= (1<<AXIS_6); axis_e = AXIS_6; }
+        else if (AXIS_6_NAME == 'H') { axis_h_mask |= (1<<AXIS_6); axis_h = AXIS_6; }
       #endif
 
   }
@@ -1391,6 +1422,7 @@ uint8_t gc_execute_line(char *line)
             axis_0, axis_1, axis_linear, axis_0_mask, axis_1_mask, axis_linear_mask,
             axis_a, axis_b, axis_c, axis_a_mask, axis_b_mask, axis_c_mask,
             axis_u, axis_v, axis_w, axis_u_mask, axis_v_mask, axis_w_mask,
+            axis_d, axis_e, axis_h, axis_d_mask, axis_e_mask, axis_h_mask,
             bit_istrue(gc_parser_flags,GC_PARSER_ARC_IS_CLOCKWISE));
       } else {
         // NOTE: gc_block.values.xyz is returned from mc_probe_cycle with the updated position value. So

@@ -89,6 +89,7 @@ void mc_arc(float *target, plan_line_data_t *pl_data, float *position, float *of
   uint8_t axis_0, uint8_t axis_1, uint8_t axis_linear, uint8_t axis_0_mask, uint8_t axis_1_mask, uint8_t axis_linear_mask,
   uint8_t axis_a, uint8_t axis_b, uint8_t axis_c, uint8_t axis_a_mask, uint8_t axis_b_mask, uint8_t axis_c_mask,
   uint8_t axis_u, uint8_t axis_v, uint8_t axis_w, uint8_t axis_u_mask, uint8_t axis_v_mask, uint8_t axis_w_mask,
+  uint8_t axis_d, uint8_t axis_e, uint8_t axis_h, uint8_t axis_d_mask, uint8_t axis_e_mask, uint8_t axis_h_mask,
   uint8_t is_clockwise_arc)
 {
   float center_axis0 = position[axis_0] + offset[axis_0];
@@ -99,6 +100,7 @@ void mc_arc(float *target, plan_line_data_t *pl_data, float *position, float *of
   float rt_axis1 = target[axis_1] - center_axis1;
   float a_per_segment, b_per_segment, c_per_segment;
   float u_per_segment, v_per_segment, w_per_segment;
+  float d_per_segment, e_per_segment, h_per_segment;
 
   // CCW angle between position and target from circle center. Only one atan2() trig computation required.
   float angular_travel = atan2(r_axis0*rt_axis1-r_axis1*rt_axis0, r_axis0*rt_axis0+r_axis1*rt_axis1);
@@ -132,6 +134,9 @@ void mc_arc(float *target, plan_line_data_t *pl_data, float *position, float *of
     if ( axis_u_mask ) u_per_segment = (target[axis_u] - position[axis_u])/segments; else u_per_segment = 0;
     if ( axis_v_mask ) v_per_segment = (target[axis_v] - position[axis_v])/segments; else v_per_segment = 0;
     if ( axis_w_mask ) w_per_segment = (target[axis_w] - position[axis_w])/segments; else w_per_segment = 0;
+    if ( axis_d_mask ) d_per_segment = (target[axis_d] - position[axis_d])/segments; else d_per_segment = 0;
+    if ( axis_e_mask ) e_per_segment = (target[axis_e] - position[axis_e])/segments; else e_per_segment = 0;
+    if ( axis_h_mask ) h_per_segment = (target[axis_h] - position[axis_h])/segments; else h_per_segment = 0;
 
     /* Vector rotation by transformation matrix: r is the original vector, r_T is the rotated vector,
        and phi is the angle of rotation. Solution approach by Jens Geisler.
@@ -319,6 +324,51 @@ void mc_arc(float *target, plan_line_data_t *pl_data, float *position, float *of
         #endif
         #if N_AXIS > 5
           if (bit_istrue((1<<AXIS_6), axis_w_mask)) {position[AXIS_6] += w_per_segment;}
+        #endif
+      }
+
+      if ( axis_d_mask ) {
+        if (bit_istrue((1<<AXIS_1), axis_d_mask)) {position[AXIS_1] += d_per_segment;}
+        if (bit_istrue((1<<AXIS_2), axis_d_mask)) {position[AXIS_2] += d_per_segment;}
+        if (bit_istrue((1<<AXIS_3), axis_d_mask)) {position[AXIS_3] += d_per_segment;}
+        #if N_AXIS > 3
+          if (bit_istrue((1<<AXIS_4), axis_d_mask)) {position[AXIS_4] += d_per_segment;}
+        #endif
+        #if N_AXIS > 4
+          if (bit_istrue((1<<AXIS_5), axis_d_mask)) {position[AXIS_5] += d_per_segment;}
+        #endif
+        #if N_AXIS > 5
+          if (bit_istrue((1<<AXIS_6), axis_d_mask)) {position[AXIS_6] += d_per_segment;}
+        #endif
+      }
+
+      if ( axis_e_mask ) {
+        if (bit_istrue((1<<AXIS_1), axis_e_mask)) {position[AXIS_1] += e_per_segment;}
+        if (bit_istrue((1<<AXIS_2), axis_e_mask)) {position[AXIS_2] += e_per_segment;}
+        if (bit_istrue((1<<AXIS_3), axis_e_mask)) {position[AXIS_3] += e_per_segment;}
+        #if N_AXIS > 3
+          if (bit_istrue((1<<AXIS_4), axis_e_mask)) {position[AXIS_4] += e_per_segment;}
+        #endif
+        #if N_AXIS > 4
+          if (bit_istrue((1<<AXIS_5), axis_e_mask)) {position[AXIS_5] += e_per_segment;}
+        #endif
+        #if N_AXIS > 5
+          if (bit_istrue((1<<AXIS_6), axis_e_mask)) {position[AXIS_6] += e_per_segment;}
+        #endif
+      }
+
+      if ( axis_h_mask ) {
+        if (bit_istrue((1<<AXIS_1), axis_h_mask)) {position[AXIS_1] += h_per_segment;}
+        if (bit_istrue((1<<AXIS_2), axis_h_mask)) {position[AXIS_2] += h_per_segment;}
+        if (bit_istrue((1<<AXIS_3), axis_h_mask)) {position[AXIS_3] += h_per_segment;}
+        #if N_AXIS > 3
+          if (bit_istrue((1<<AXIS_4), axis_h_mask)) {position[AXIS_4] += h_per_segment;}
+        #endif
+        #if N_AXIS > 4
+          if (bit_istrue((1<<AXIS_5), axis_h_mask)) {position[AXIS_5] += h_per_segment;}
+        #endif
+        #if N_AXIS > 5
+          if (bit_istrue((1<<AXIS_6), axis_h_mask)) {position[AXIS_6] += h_per_segment;}
         #endif
       }
 

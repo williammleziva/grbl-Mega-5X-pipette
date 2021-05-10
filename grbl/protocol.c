@@ -490,13 +490,6 @@ void protocol_exec_rt_system()
     }
   }
 
-  #ifdef DEBUG
-    if (sys_rt_exec_debug) {
-      report_realtime_debug();
-      sys_rt_exec_debug = 0;
-    }
-  #endif
-
   // Reload step segment buffer
   if (sys.state & (STATE_CYCLE | STATE_HOLD | STATE_SAFETY_DOOR | STATE_HOMING | STATE_SLEEP| STATE_JOG)) {
     st_prep_buffer();

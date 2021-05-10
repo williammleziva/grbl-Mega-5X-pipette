@@ -219,9 +219,30 @@ uint8_t system_execute_line(char *line)
                     return(STATUS_INVALID_STATEMENT);
                   }
                   break;
+                case 'D':
+                  if (axis_D_mask != 0) {
+                    mc_homing_cycle(axis_D_mask);
+                  } else {
+                    return(STATUS_INVALID_STATEMENT);
+                  }
+                  break;
+                case 'E':
+                  if (axis_E_mask != 0) {
+                    mc_homing_cycle(axis_E_mask);
+                  } else {
+                    return(STATUS_INVALID_STATEMENT);
+                  }
+                  break;
+                case 'H':
+                  if (axis_H_mask != 0) {
+                    mc_homing_cycle(axis_H_mask);
+                  } else {
+                    return(STATUS_INVALID_STATEMENT);
+                  }
+                  break;
                 default: return(STATUS_INVALID_STATEMENT);
               }
-          #endif
+          #endif // HOMING_SINGLE_AXIS_COMMANDS
           } else { return(STATUS_INVALID_STATEMENT); }
           if (!sys.abort) {  // Execute startup scripts after successful homing.
             sys.state = STATE_IDLE; // Set to IDLE when complete.

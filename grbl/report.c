@@ -761,9 +761,14 @@ void report_realtime_status()
 
 
 #ifdef DEBUG
-  void report_realtime_debug()
+  void report_realtime_debug(char *line, uint8_t val)
   {
-    printPgmString(PSTR("{report_realtime_debug("));
+    printPgmString(PSTR("{debug("));
+    printString(line);
+    printPgmString(PSTR("|val:"));
+    print_uint8_base10(val);
+    printPgmString(PSTR("|Amask:"));
+    print_uint8_base10(axis_A_mask);
     // print realtime debug values here
     printPgmString(PSTR(")}"));
     report_util_line_feed();

@@ -37,9 +37,12 @@ uint8_t axis_Z_mask = 0; // Global mask for axis Z bits
 uint8_t axis_A_mask = 0; // Global mask for axis A bits
 uint8_t axis_B_mask = 0; // Global mask for axis B bits
 uint8_t axis_C_mask = 0; // Global mask for axis C bits
-uint8_t axis_U_mask = 0; // Global mask for axis C bits
-uint8_t axis_V_mask = 0; // Global mask for axis C bits
-uint8_t axis_W_mask = 0; // Global mask for axis C bits
+uint8_t axis_U_mask = 0; // Global mask for axis U bits
+uint8_t axis_V_mask = 0; // Global mask for axis V bits
+uint8_t axis_W_mask = 0; // Global mask for axis W bits
+uint8_t axis_D_mask = 0; // Global mask for axis U bits
+uint8_t axis_E_mask = 0; // Global mask for axis V bits
+uint8_t axis_H_mask = 0; // Global mask for axis W bits
 unsigned char axis_name[N_AXIS]; // Global table of axis names
 #ifdef DEBUG
   volatile uint8_t sys_rt_exec_debug;
@@ -336,7 +339,100 @@ int main(void)
       axis_name[5] = 'W';
     }
   #endif
+  
+  if (AXIS_1_NAME == 'D') {
+    axis_D_mask |= (1<<AXIS_1);
+    axis_name[0] = 'D';
+  }
+  if (AXIS_2_NAME == 'D') {
+    axis_D_mask |= (1<<AXIS_2);
+    axis_name[1] = 'D';
+  }
+  if (AXIS_3_NAME == 'D') {
+    axis_D_mask |= (1<<AXIS_3);
+    axis_name[2] = 'D';
+  }
+  #ifdef AXIS_4
+    if (AXIS_4_NAME == 'D') {
+      axis_D_mask |= (1<<AXIS_4);
+      axis_name[3] = 'D';
+    }
+  #endif
+  #ifdef AXIS_5
+    if (AXIS_5_NAME == 'D') {
+      axis_D_mask |= (1<<AXIS_5);
+      axis_name[4] = 'D';
+    }
+  #endif
+  #ifdef AXIS_6
+    if (AXIS_6_NAME == 'D') {
+      axis_D_mask |= (1<<AXIS_6);
+      axis_name[5] = 'D';
+    }
+  #endif
+  
+  if (AXIS_1_NAME == 'E') {
+    axis_E_mask |= (1<<AXIS_1);
+    axis_name[0] = 'E';
+  }
+  if (AXIS_2_NAME == 'E') {
+    axis_E_mask |= (1<<AXIS_2);
+    axis_name[1] = 'E';
+  }
+  if (AXIS_3_NAME == 'E') {
+    axis_E_mask |= (1<<AXIS_3);
+    axis_name[2] = 'E';
+  }
+  #ifdef AXIS_4
+    if (AXIS_4_NAME == 'E') {
+      axis_E_mask |= (1<<AXIS_4);
+      axis_name[3] = 'E';
+    }
+  #endif
+  #ifdef AXIS_5
+    if (AXIS_5_NAME == 'E') {
+      axis_E_mask |= (1<<AXIS_5);
+      axis_name[4] = 'E';
+    }
+  #endif
+  #ifdef AXIS_6
+    if (AXIS_6_NAME == 'E') {
+      axis_E_mask |= (1<<AXIS_6);
+      axis_name[5] = 'E';
+    }
+  #endif
 
+  if (AXIS_1_NAME == 'H') {
+    axis_H_mask |= (1<<AXIS_1);
+    axis_name[0] = 'H';
+  }
+  if (AXIS_2_NAME == 'H') {
+    axis_H_mask |= (1<<AXIS_2);
+    axis_name[1] = 'H';
+  }
+  if (AXIS_3_NAME == 'H') {
+    axis_H_mask |= (1<<AXIS_3);
+    axis_name[2] = 'H';
+  }
+  #ifdef AXIS_4
+    if (AXIS_4_NAME == 'H') {
+      axis_H_mask |= (1<<AXIS_4);
+      axis_name[3] = 'H';
+    }
+  #endif
+  #ifdef AXIS_5
+    if (AXIS_5_NAME == 'H') {
+      axis_H_mask |= (1<<AXIS_5);
+      axis_name[4] = 'H';
+    }
+  #endif
+  #ifdef AXIS_6
+    if (AXIS_6_NAME == 'H') {
+      axis_H_mask |= (1<<AXIS_6);
+      axis_name[5] = 'H';
+    }
+  #endif
+  
   #ifdef SORT_REPORT_BY_AXIS_NAME
     #ifdef REPORT_VALUE_FOR_AXIS_NAME_ONCE
       // Calcule le nombre de nom d'axes différents à utiliser dans report.c

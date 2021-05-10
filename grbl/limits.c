@@ -222,6 +222,7 @@ static uint8_t axislock_active(uint8_t *axislock)
 // TODO: Move limit pin-specific calls to a general function for portability.
 void limits_go_home(uint8_t cycle_mask)
 {
+
   if (sys.abort) { return; } // Block if system reset has been issued.
 
   // Initialize plan data struct for homing motion. Spindle and coolant are disabled.
@@ -248,8 +249,10 @@ void limits_go_home(uint8_t cycle_mask)
       // Set target based on max_travel setting. Ensure homing switches engaged with search scalar.
       // NOTE: settings.max_travel[] is stored as a negative value.
       max_travel = max(max_travel,(-HOMING_AXIS_SEARCH_SCALAR)*settings.max_travel[idx]);
+      if (max_travel < HOMING_AXIS_LOCATE_SCALAR) { system_set_exec_alarm(EXEC_ALARM_HOMING_FAIL_TRAVEL); }
     }
   }
+
   // Set search mode with approach at seek rate to quickly engage the specified cycle_mask limit switches.
   bool approach = true;
   float homing_rate = settings.homing_seek_rate;
@@ -296,7 +299,6 @@ void limits_go_home(uint8_t cycle_mask)
 
     }
     homing_rate *= sqrt(n_active_axis); // [sqrt(N_AXIS)] Adjust so individual axes all move at homing rate.
-
 
     // Perform homing cycle. Planner buffer should be empty, as required to initiate the homing cycle.
     pl_data->feed_rate = homing_rate; // Set current homing rate.
