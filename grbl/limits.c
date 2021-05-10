@@ -109,29 +109,6 @@ void limits_init()
       MAX_LIMIT_PORT(5) |= (1<<MAX_LIMIT_BIT(5));  // Enable internal pull-up resistors. Normal high operation.
     #endif
   #endif
-  #ifndef DISABLE_HW_LIMITS_INTERRUPT
-    if (bit_istrue(settings.flags,BITFLAG_HARD_LIMIT_ENABLE)) {
-      LIMIT_PCMSK |= LIMIT_MASK; // Enable specific pins of the Pin Change Interrupt
-      PCICR |= (1 << LIMIT_INT); // Enable Pin Change Interrupt
-    } else {
-      limits_disable();
-    }
-    #ifdef ENABLE_SOFTWARE_DEBOUNCE
-      MCUSR &= ~(1<<WDRF);
-      WDTCSR |= (1<<WDCE) | (1<<WDE);
-      WDTCSR = (1<<WDP0); // Set time-out at ~32msec.
-    #endif
-  #endif // DISABLE_HW_LIMITS_INTERRUPT
-}
-
-
-// Disables hard limits.
-void limits_disable()
-{
-  #ifndef DISABLE_HW_LIMITS_INTERRUPT
-    LIMIT_PCMSK &= ~LIMIT_MASK;  // Disable specific pins of the Pin Change Interrupt
-    PCICR &= ~(1 << LIMIT_INT);  // Disable Pin Change Interrupt
-  #endif
 }
 
 #if N_AXIS == 4
@@ -194,9 +171,6 @@ uint8_t limits_get_state()
   }
 }
 
-#ifndef DISABLE_HW_LIMITS_INTERRUPT
-  #error "HW limits interrupts are not implemented"
-#endif
 #ifdef ENABLE_RAMPS_HW_LIMITS
   void ramps_hard_limit()
   {

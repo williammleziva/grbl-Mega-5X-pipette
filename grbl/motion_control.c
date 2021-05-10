@@ -358,8 +358,6 @@ void mc_homing_cycle(uint8_t cycle_mask)
     }
   #endif
 
-  limits_disable(); // Disable hard limits pin change register for cycle duration
-
   // -------------------------------------------------------------------------------------
   // Perform homing routine. NOTE: Special motion case. Only system reset works.
 
