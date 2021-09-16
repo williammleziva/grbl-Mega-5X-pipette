@@ -23,8 +23,8 @@
 #define grbl_h
 
 // Grbl versioning system
-#define GRBL_VERSION "1.1t"
-#define GRBL_VERSION_BUILD "20210510"
+#define GRBL_VERSION "1.2a"
+#define GRBL_VERSION_BUILD "20210912"
 
 // Define standard libraries used by Grbl.
 #include <avr/io.h>
@@ -48,6 +48,7 @@
 #include "cpu_map.h"
 #include "planner.h"
 #include "coolant_control.h"
+#include "digital_control.h"
 #include "eeprom.h"
 #include "gcode.h"
 #include "limits.h"

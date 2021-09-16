@@ -288,6 +288,10 @@ uint8_t gc_execute_line(char *line)
               gc_block.modal.override = OVERRIDE_PARKING_MOTION;
               break;
           #endif
+          case 62: case 63: case 64: case 65:
+            dword_bit = MODAL_GROUP_M10;
+            gc_block.non_modal_command = int_value;
+            break;
           default: FAIL(STATUS_GCODE_UNSUPPORTED_COMMAND); // [Unsupported M command]
         }
 
@@ -353,9 +357,15 @@ uint8_t gc_execute_line(char *line)
             #endif
             break;
           case 'L': dword_bit = DWORD_L; gc_block.values.l = int_value; break;
-          case 'N': dword_bit = DWORD_N; gc_block.values.n = trunc(value); break;
-          case 'P': dword_bit = DWORD_P; gc_block.values.p = value; break;
-          // NOTE: For certain commands, P value must be an integer, but none of these commands are supported.
+          case 'N': dword_bit = DWORD_N; gc_block.values.n = trunc(value); 
+          case 'P': dword_bit = DWORD_P;
+            // NOTE: For certain commands, P value must be an integer, This is the case of Digital output M26-M65
+            if ((gc_block.non_modal_command >= NON_MODAL_DIGITAL_SYNC_ON) && (gc_block.non_modal_command <= NON_MODAL_DIGITAL_IMMEDIATE_OFF)) {
+              gc_block.values.p = int_value;
+            } else {
+              gc_block.values.p = value;
+            }
+            break;
           // case 'Q': // Not supported
           case 'R': dword_bit = DWORD_R; gc_block.values.r = value; break;
           case 'S': dword_bit = DWORD_S; gc_block.values.s = value; break;
@@ -1188,6 +1198,13 @@ uint8_t gc_execute_line(char *line)
 
   // [21. Program flow ]: No error checks required.
 
+  // [22. Digital output ]: P value missing, P must be: 0<=P<=3 (value < 0 is aleready checked)
+  if ((gc_block.non_modal_command >= NON_MODAL_DIGITAL_SYNC_ON) && (gc_block.non_modal_command <= NON_MODAL_DIGITAL_IMMEDIATE_OFF)) {
+    if (bit_isfalse(value_dwords,dwbit(DWORD_P))) { FAIL(STATUS_GCODE_VALUE_WORD_MISSING); } // [P word missing]
+    if (gc_block.values.p > 3) { FAIL(STATUS_GCODE_MAX_VALUE_EXCEEDED); }
+    bit_false(value_dwords,dwbit(DWORD_P));
+  }
+
   // [0. Non-specific error-checks]: Complete unused value words check, i.e. IJK used when in arc
   // radius mode, or axis words that aren't used in the block.
   if (gc_parser_flags & GC_PARSER_JOG_MOTION) {
@@ -1488,10 +1505,30 @@ uint8_t gc_execute_line(char *line)
         system_flag_wco_change(); // Set to refresh immediately just in case something altered.
         spindle_set_state(SPINDLE_DISABLE,0.0);
         coolant_set_state(COOLANT_DISABLE);
+        digital_set_state(DIGITAL_OUTPUT_STATE_OFF);
       }
       report_feedback_message(MESSAGE_PROGRAM_END);
     }
     gc_state.modal.program_flow = PROGRAM_FLOW_RUNNING; // Reset program flow.
+  }
+
+  // [22. Digital output ]: P value missing. P is negative (done.) NOTE: See below.
+  if ((gc_block.non_modal_command >= NON_MODAL_DIGITAL_SYNC_ON) && (gc_block.non_modal_command <= NON_MODAL_DIGITAL_IMMEDIATE_OFF)) {
+    uint8_t digital_mode = digital_get_state();
+    switch(gc_block.non_modal_command) {
+      case NON_MODAL_DIGITAL_SYNC_ON:
+        digital_sync(digital_mode | bit((uint8_t) gc_block.values.p));
+        break;
+      case NON_MODAL_DIGITAL_SYNC_OFF:
+        digital_sync(digital_mode & ~(bit((uint8_t) gc_block.values.p)));
+        break;
+      case NON_MODAL_DIGITAL_IMMEDIATE_ON:
+        digital_set_state(digital_mode | bit((uint8_t) gc_block.values.p));
+        break;
+      case NON_MODAL_DIGITAL_IMMEDIATE_OFF:
+        digital_set_state(digital_mode & ~(bit((uint8_t) gc_block.values.p)));
+        break;
+    }
   }
 
   // TODO: % to denote start of program.

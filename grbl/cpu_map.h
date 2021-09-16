@@ -221,6 +221,21 @@
   #define COOLANT_MIST_PORT   PORTH
   #define COOLANT_MIST_BIT    6 // MEGA2560 Digital Pin 9 - Ramps 1.4 12v output
 
+  // Define M62 - M65 Digital Output Control ports
+  // D16 D17 D23 D25
+  #define DIGITAL_OUTPUT_DDR_0  DDRH
+  #define DIGITAL_OUTPUT_PORT_0 PORTH
+  #define DIGITAL_OUTPUT_BIT_0  1 // MEGA2560 Digital Pin 16 - Ramps 1.4 AUX-4 D16
+  #define DIGITAL_OUTPUT_DDR_1  DDRH
+  #define DIGITAL_OUTPUT_PORT_1 PORTH
+  #define DIGITAL_OUTPUT_BIT_1  0 // MEGA2560 Digital Pin 17 - Ramps 1.4 AUX-4 D17
+  #define DIGITAL_OUTPUT_DDR_2  DDRA
+  #define DIGITAL_OUTPUT_PORT_2 PORTA
+  #define DIGITAL_OUTPUT_BIT_2  1 // MEGA2560 Digital Pin 23 - Ramps 1.4 AUX-4 D23
+  #define DIGITAL_OUTPUT_DDR_3  DDRA
+  #define DIGITAL_OUTPUT_PORT_3 PORTA
+  #define DIGITAL_OUTPUT_BIT_3  3 // MEGA2560 Digital Pin 23 - Ramps 1.4 AUX-4 D25
+  
   // Define user-control CONTROLs (cycle start, reset, feed hold) input pins.
   // NOTE: All CONTROLs pins must be on the same port and not on a port with other input pins (limits).
   #define CONTROL_DDR       DDRK

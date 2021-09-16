@@ -46,6 +46,7 @@
 #define MODAL_GROUP_M7 12 // [M3,M4,M5] Spindle turning
 #define MODAL_GROUP_M8 13 // [M7,M8,M9] Coolant control
 #define MODAL_GROUP_M9 14 // [M56] Override control
+#define MODAL_GROUP_M10 15 // [M62-M65] Digital output -Non-modal
 
 // Define command actions for within execution-type modal groups (motion, stopping, non-modal). Used
 // internally by the parser to know which command to execute.
@@ -132,6 +133,12 @@
   #define OVERRIDE_PARKING_MOTION 0 // M56 (Default: Must be zero)
   #define OVERRIDE_DISABLED  1 // Parking disabled.
 #endif
+
+// Modal Group M10: Digital output (non modal)
+#define NON_MODAL_DIGITAL_SYNC_ON  62      // M62
+#define NON_MODAL_DIGITAL_SYNC_OFF 63      // M63
+#define NON_MODAL_DIGITAL_IMMEDIATE_ON 64  // M64
+#define NON_MODAL_DIGITAL_IMMEDIATE_OFF 65 // M65
 
 // Modal Group G12: Active work coordinate system
 // N/A: Stores coordinate system value (54-59) to change to.
