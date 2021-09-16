@@ -26,7 +26,8 @@
 // arbitrary value, and some GUIs may require more. So we increased it based on a max safe
 // value when converting a float (7.2 digit precision)s to an integer.
 #define MAX_LINE_NUMBER 10000000
-#define MAX_TOOL_NUMBER 255 // Limited by max unsigned 8-bit value
+#define MAX_TOOL_NUMBER 255  // Limited by max unsigned 8-bit value
+#define MAX_DIGITAL_OUTPUT 3 // 4 defined digital IO output (0 to 3)
 
 #define AXIS_COMMAND_NONE 0
 #define AXIS_COMMAND_NON_MODAL 1
@@ -289,6 +290,7 @@ uint8_t gc_execute_line(char *line)
               break;
           #endif
           case 62: case 63: case 64: case 65:
+            // M62, M63, M64, M65
             dword_bit = MODAL_GROUP_M10;
             gc_block.non_modal_command = int_value;
             break;
@@ -1198,10 +1200,10 @@ uint8_t gc_execute_line(char *line)
 
   // [21. Program flow ]: No error checks required.
 
-  // [22. Digital output ]: P value missing, P must be: 0<=P<=3 (value < 0 is aleready checked)
+  // [22. Digital output ]: P value missing, P must be: 0<=P<=MAX_DIGITAL_OUTPUT (value < 0 is aleready checked)
   if ((gc_block.non_modal_command >= NON_MODAL_DIGITAL_SYNC_ON) && (gc_block.non_modal_command <= NON_MODAL_DIGITAL_IMMEDIATE_OFF)) {
     if (bit_isfalse(value_dwords,dwbit(DWORD_P))) { FAIL(STATUS_GCODE_VALUE_WORD_MISSING); } // [P word missing]
-    if (gc_block.values.p > 3) { FAIL(STATUS_GCODE_MAX_VALUE_EXCEEDED); }
+    if (gc_block.values.p > MAX_DIGITAL_OUTPUT) { FAIL(STATUS_GCODE_MAX_VALUE_EXCEEDED); }
     bit_false(value_dwords,dwbit(DWORD_P));
   }
 

@@ -529,14 +529,8 @@ void report_build_info(char *line)
   #ifdef ALLOW_FEED_OVERRIDE_DURING_PROBE_CYCLES
     serial_write('A');
   #endif
-  #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
-    serial_write('D');
-  #endif
   #ifdef SPINDLE_ENABLE_OFF_WITH_ZERO_SPEED
     serial_write('0');
-  #endif
-  #ifdef ENABLE_SOFTWARE_DEBOUNCE
-    serial_write('S');
   #endif
   #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
     serial_write('R');
@@ -743,7 +737,8 @@ void report_realtime_status()
 
       uint8_t sp_state = spindle_get_state();
       uint8_t cl_state = coolant_get_state();
-      if (sp_state || cl_state) {
+      uint8_t dg_state = digital_get_state();
+      if (sp_state || cl_state || dg_state) {
         printPgmString(PSTR("|A:"));
         if (sp_state) { // != SPINDLE_STATE_DISABLE
           if (sp_state == SPINDLE_STATE_CW) { serial_write('S'); } // CW
@@ -751,6 +746,13 @@ void report_realtime_status()
         }
         if (cl_state & COOLANT_STATE_FLOOD) { serial_write('F'); }
         if (cl_state & COOLANT_STATE_MIST) { serial_write('M'); }
+        if (dg_state) { // One or more digital output is active
+          serial_write('D');
+          if (dg_state  & DIGITAL_OUTPUT_STATE_P3) { serial_write('1'); } else {serial_write('0');}
+          if (dg_state  & DIGITAL_OUTPUT_STATE_P2) { serial_write('1'); } else {serial_write('0');}
+          if (dg_state  & DIGITAL_OUTPUT_STATE_P1) { serial_write('1'); } else {serial_write('0');}
+          if (dg_state  & DIGITAL_OUTPUT_STATE_P0) { serial_write('1'); } else {serial_write('0');}
+        }
       }
     }
   #endif

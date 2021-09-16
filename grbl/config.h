@@ -248,12 +248,6 @@
 // coordinates through Grbl '$#' print parameters.
 #define MESSAGE_PROBE_COORDINATES // Enabled by default. Comment to disable.
 
-// This option causes the feed hold input to act as a safety door switch. A safety door, when triggered,
-// immediately forces a feed hold and then safely de-energizes the machine. Resuming is blocked until
-// the safety door is re-engaged. When it is, Grbl will re-energize the machine and then resume on the
-// previous tool path, as if nothing happened.
-#define ENABLE_SAFETY_DOOR_INPUT_PIN // Default disabled. Uncomment to enable.
-
 // After the safety door switch has been toggled and restored, this setting sets the power-up delay
 // between restoring the spindle and coolant and resuming the cycle.
 #define SAFETY_DOOR_SPINDLE_DELAY 4.0 // Float (seconds)
@@ -339,7 +333,6 @@
 #define DEFAULT_RAPID_OVERRIDE  100 // 100%. Don't change this value.
 #define RAPID_OVERRIDE_MEDIUM    50 // Percent of rapid (1-99). Usually 50%.
 #define RAPID_OVERRIDE_LOW       25 // Percent of rapid (1-99). Usually 25%.
-// #define RAPID_OVERRIDE_EXTRA_LOW 5 // *NOT SUPPORTED* Percent of rapid (1-99). Usually 5%.
 
 #define DEFAULT_SPINDLE_SPEED_OVERRIDE    100 // 100%. Don't change this value.
 #define MAX_SPINDLE_SPEED_OVERRIDE        200 // Percent of programmed spindle speed (100-255). Usually 200%.
@@ -539,25 +532,6 @@
 // NOTE: Be very careful when changing this value. Check EEPROM address locations to make sure
 // these string storage locations won't corrupt one another.
 // #define EEPROM_LINE_SIZE 80 // Uncomment to override defaults in settings.h
-
-// Toggles XON/XOFF software flow control for serial communications. Not officially supported
-// due to problems involving the Atmega8U2 USB-to-serial chips on current Arduinos. The firmware
-// on these chips do not support XON/XOFF flow control characters and the intermediate buffer
-// in the chips cause latency and overflow problems with standard terminal programs. However,
-// using specifically-programmed UI's to manage this latency problem has been confirmed to work.
-// As well as, older FTDI FT232RL-based Arduinos(Duemilanove) are known to work with standard
-// terminal programs since their firmware correctly manage these XON/XOFF characters. In any
-// case, please report any successes to grbl administrators!
-// #define ENABLE_XONXOFF // Default disabled. Uncomment to enable.
-
-// A simple software debouncing feature for hard limit switches. When enabled, the interrupt
-// monitoring the hard limit switch pins will enable the Arduino's watchdog timer to re-check
-// the limit pin state after a delay of about 32msec. This can help with CNC machines with
-// problematic false triggering of their hard limit switches, but it WILL NOT fix issues with
-// electrical interference on the signal cables from external sources. It's recommended to first
-// use shielded signal cables with their shielding connected to ground (old USB/computer cables
-// work well and are cheap to find) and wire in a low-pass circuit into each limit pin.
-// #define ENABLE_SOFTWARE_DEBOUNCE // Default disabled. Uncomment to enable.
 
 // Configures the position after a probing cycle during Grbl's check mode. Disabled sets
 // the position to the probe target, when enabled sets the position to the start position.
