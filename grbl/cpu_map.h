@@ -257,7 +257,36 @@
   #define PROBE_BIT       7  // MEGA2560 Analog Pin 15
   #define PROBE_MASK      (1<<PROBE_BIT)
 
+  //-------------------------------------------------------------------------------------------------------
   // Advanced Configuration Below You should not need to touch these variables
+  //-------------------------------------------------------------------------------------------------------
+
+  // Spindle PWM configuration :
+  // list of timers in Arduino Mega 2560
+  // timer 0 (controls pin 13, 4);
+  // timer 1 (controls pin 12, 11);
+  // timer 2 (controls pin 10, 9);
+  // timer 3 (controls pin 5, 3, 2);
+  // timer 4 (controls pin 8, 7, 6);
+  // 
+  // Arduino pin number and the corresponding register for controlling the duty cycle :
+  // Pin  Register
+  //   2  OCR3B
+  //   3  OCR3C
+  //   4  OCR4C
+  //   5  OCR3A
+  //   6  OCR4A
+  //   7  OCR4B
+  //   8  OCR4C
+  //   9  OCR2B
+  //  10  OCR2A
+  //  11  OCR1A
+  //  12  OCR1B
+  //  13  OCR0A
+  //  44  OCR5C
+  //  45  OCR5B
+  //  46  OCR5A
+
   #if defined(SPINDLE_PWM_ON_D8)
 
     // Set Timer up to use TIMER4B which is attached to Digital Pin 8 - Ramps 1.4 12v output with heat sink
@@ -311,8 +340,36 @@
     #define SPINDLE_PWM_DDR   DDRH
     #define SPINDLE_PWM_PORT  PORTH
     #define SPINDLE_PWM_BIT   3 // MEGA2560 Digital Pin 6
+
+  #elif defined (SPINDLE_PWM_ON_D11)
+
+    // Set Timer up to use TIMER1 which is attached to Digital Pin 11 - Ramps Servo 1
+    #define SPINDLE_PWM_MAX_VALUE     255.0 // Translates to about 1.9 kHz PWM frequency at 1/8 prescaler
+    #ifndef SPINDLE_PWM_MIN_VALUE
+      #define SPINDLE_PWM_MIN_VALUE   1   // Must be greater than zero.
+    #endif
+    #define SPINDLE_PWM_OFF_VALUE     0
+    #define SPINDLE_PWM_RANGE         (SPINDLE_PWM_MAX_VALUE-SPINDLE_PWM_MIN_VALUE)
+
+    //Control Digital Pin 6 which is Servo 2 signal pin on Ramps 1.4 board
+    #define SPINDLE_TCCRA_REGISTER    TCCR1A
+    #define SPINDLE_TCCRB_REGISTER    TCCR1B
+    #define SPINDLE_OCR_REGISTER      OCR1A
+    #define SPINDLE_COMB_BIT          COM1A1
+
+    // 1/8 Prescaler, 16-bit Fast PWM mode
+    #define SPINDLE_TCCRA_INIT_MASK (1<<WGM41)
+    #define SPINDLE_TCCRB_INIT_MASK ((1<<WGM42) | (1<<WGM43) | (1<<CS41))
+    #define SPINDLE_OCRA_REGISTER   ICR1 // 8-bit Fast PWM mode requires top reset value stored here.
+    #define SPINDLE_OCRA_TOP_VALUE  0xFF // PWM counter reset value. Should be the same as PWM_MAX_VALUE in hex.
+
+    // Define spindle output pins.
+    #define SPINDLE_PWM_DDR   DDRB
+    #define SPINDLE_PWM_PORT  PORTB
+    #define SPINDLE_PWM_BIT   5 // MEGA2560 Digital Pin 11
+
   #else
-    #error "You must define SPINDLE_PWM_ON_D8 or SPINDLE_PWM_ON_D6 in config.h"
+    #error "You must define SPINDLE_PWM_ON_D8 or SPINDLE_PWM_ON_D6 or SPINDLE_PWM_ON_D11 in config.h"
   #endif
 
 #endif // CPU_MAP_2560_RAMPS_BOARD
