@@ -5,5 +5,7 @@
 *.DS_Store
 *.d
 .grbl*
+.vscode
+platformio.ini
 
 README.md
