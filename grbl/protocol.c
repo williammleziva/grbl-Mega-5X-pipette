@@ -53,8 +53,8 @@ void protocol_main_loop()
     report_feedback_message(MESSAGE_ALARM_LOCK);
     sys.state = STATE_ALARM; // Ensure alarm state is set.
   } else {
-    // Check if the safety door is open.
     sys.state = STATE_IDLE;
+    // Check if the safety door is open.
     if (system_check_safety_door_ajar()) {
       bit_true(sys_rt_exec_state, EXEC_SAFETY_DOOR);
       protocol_execute_realtime(); // Enter safety door mode. Should return as IDLE state.

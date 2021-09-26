@@ -28,7 +28,7 @@
 */
 
 #include "grbl.h"
-
+#include <stdarg.h>
 
 // Internal report utilities to reduce flash with repetitive tasks turned into functions.
 void report_util_setting_prefix(uint8_t n) { serial_write('$'); print_uint8_base10(n); serial_write('='); }
@@ -705,6 +705,7 @@ void report_realtime_status()
       }
     }
   #endif
+
   #ifdef DEBUG
     printPgmString(PSTR("|Dbg:"));
     // Other debugs here...
@@ -763,16 +764,34 @@ void report_realtime_status()
 
 
 #ifdef DEBUG
-  void report_realtime_debug(char *line, uint8_t val)
-  {
-    printPgmString(PSTR("{debug("));
-    printString(line);
-    printPgmString(PSTR("|val:"));
-    print_uint8_base10(val);
-    printPgmString(PSTR("|Amask:"));
-    print_uint8_base10(axis_A_mask);
-    // print realtime debug values here
-    printPgmString(PSTR(")}"));
-    report_util_line_feed();
+
+// Report debug string on serial
+void report_debug_string(char *line)
+{
+  printPgmString(PSTR("{debug("));
+  printString(line);
+  printPgmString(PSTR(")}"));
+  report_util_line_feed();
+}
+
+// Report debug int value
+// This function accept the variable's name string as optional argument
+void report_debug_int(uint8_t val, ...)
+{
+  va_list args;
+  char *valname;
+  
+  va_start(args, val);
+  valname = va_arg(args, char *);
+  va_end(args);
+  
+  printPgmString(PSTR("{debug("));
+  if ( valname != NULL ) { 
+    printString(valname); 
+    printString(" = "); 
   }
-#endif
+  print_uint8_base10(val);
+  printPgmString(PSTR(")}"));
+  report_util_line_feed();
+}
+#endif // DEBUG

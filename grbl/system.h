@@ -28,14 +28,14 @@
 // NOTE: The system executor uses an unsigned 8-bit volatile variable (8 flag limit.) The default
 // flags are always false, so the realtime protocol only needs to check for a non-zero value to
 // know when there is a realtime command to execute.
-#define EXEC_STATUS_REPORT  bit(0) // bitmask 00000001
-#define EXEC_CYCLE_START    bit(1) // bitmask 00000010
-#define EXEC_CYCLE_STOP     bit(2) // bitmask 00000100
-#define EXEC_FEED_HOLD      bit(3) // bitmask 00001000
-#define EXEC_RESET          bit(4) // bitmask 00010000
-#define EXEC_SAFETY_DOOR    bit(5) // bitmask 00100000
-#define EXEC_MOTION_CANCEL  bit(6) // bitmask 01000000
-#define EXEC_SLEEP          bit(7) // bitmask 10000000
+#define EXEC_STATUS_REPORT  bit(0) // bitmask 00000001   1
+#define EXEC_CYCLE_START    bit(1) // bitmask 00000010   2
+#define EXEC_CYCLE_STOP     bit(2) // bitmask 00000100   4
+#define EXEC_FEED_HOLD      bit(3) // bitmask 00001000   8
+#define EXEC_RESET          bit(4) // bitmask 00010000  16
+#define EXEC_SAFETY_DOOR    bit(5) // bitmask 00100000  32
+#define EXEC_MOTION_CANCEL  bit(6) // bitmask 01000000  64
+#define EXEC_SLEEP          bit(7) // bitmask 10000000 128
 
 // Alarm executor codes. Valid values (1-255). Zero is reserved.
 #define EXEC_ALARM_HARD_LIMIT            1
@@ -96,10 +96,10 @@
 
 // Define step segment generator state flags.
 #define STEP_CONTROL_NORMAL_OP            0  // Must be zero.
-#define STEP_CONTROL_END_MOTION           bit(0)
-#define STEP_CONTROL_EXECUTE_HOLD         bit(1)
-#define STEP_CONTROL_EXECUTE_SYS_MOTION   bit(2)
-#define STEP_CONTROL_UPDATE_SPINDLE_PWM   bit(3)
+#define STEP_CONTROL_END_MOTION           bit(0) // 00000001   1
+#define STEP_CONTROL_EXECUTE_HOLD         bit(1) // 00000010   2
+#define STEP_CONTROL_EXECUTE_SYS_MOTION   bit(2) // 00000100   4
+#define STEP_CONTROL_UPDATE_SPINDLE_PWM   bit(3) // 00001000   8
 
 // Define control pin index for Grbl internal use. Pin maps may change, but these values don't.
 #define N_CONTROL_PIN 4
