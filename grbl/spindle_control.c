@@ -27,6 +27,8 @@ static float pwm_gradient; // Precalulated value to speed up rpm to PWM conversi
 
 void spindle_init()
 {    
+  // Force PWM output zero to avoid PWM output flash on laser output
+  SPINDLE_TCCRA_REGISTER &= ~(1<<SPINDLE_COMB_BIT); // Disable PWM. Output voltage is zero.
   // Configure variable spindle PWM and enable pin, if required.
   SPINDLE_PWM_DDR |= (1<<SPINDLE_PWM_BIT); // Configure as PWM output pin.
   SPINDLE_TCCRA_REGISTER = SPINDLE_TCCRA_INIT_MASK; // Configure PWM output compare timer
