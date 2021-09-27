@@ -5,6 +5,6 @@ backlash compensation
 CoreXY homing bug correction grbl-Mega-5X #124 / grbl-Mega #49
 Second serial port communications
 Spindle enable (laser enable) did not restore after feed hold, bug #79
-
+Implementy analog output (PWM output) M67/M68
 
 
