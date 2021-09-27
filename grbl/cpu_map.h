@@ -341,33 +341,6 @@
     #define SPINDLE_PWM_PORT  PORTH
     #define SPINDLE_PWM_BIT   3 // MEGA2560 Digital Pin 6
 
-  #elif defined (SPINDLE_PWM_ON_D11)
-
-    // Set Timer up to use TIMER1 which is attached to Digital Pin 11 - Ramps Servo 1
-    #define SPINDLE_PWM_MAX_VALUE     255.0 // Translates to about 1.9 kHz PWM frequency at 1/8 prescaler
-    #ifndef SPINDLE_PWM_MIN_VALUE
-      #define SPINDLE_PWM_MIN_VALUE   1   // Must be greater than zero.
-    #endif
-    #define SPINDLE_PWM_OFF_VALUE     0
-    #define SPINDLE_PWM_RANGE         (SPINDLE_PWM_MAX_VALUE-SPINDLE_PWM_MIN_VALUE)
-
-    //Control Digital Pin 6 which is Servo 2 signal pin on Ramps 1.4 board
-    #define SPINDLE_TCCRA_REGISTER    TCCR1A
-    #define SPINDLE_TCCRB_REGISTER    TCCR1B
-    #define SPINDLE_OCR_REGISTER      OCR1A
-    #define SPINDLE_COMB_BIT          COM1A1
-
-    // 1/8 Prescaler, 16-bit Fast PWM mode
-    #define SPINDLE_TCCRA_INIT_MASK (1<<WGM41)
-    #define SPINDLE_TCCRB_INIT_MASK ((1<<WGM42) | (1<<WGM43) | (1<<CS41))
-    #define SPINDLE_OCRA_REGISTER   ICR1 // 8-bit Fast PWM mode requires top reset value stored here.
-    #define SPINDLE_OCRA_TOP_VALUE  0xFF // PWM counter reset value. Should be the same as PWM_MAX_VALUE in hex.
-
-    // Define spindle output pins.
-    #define SPINDLE_PWM_DDR   DDRB
-    #define SPINDLE_PWM_PORT  PORTB
-    #define SPINDLE_PWM_BIT   5 // MEGA2560 Digital Pin 11
-
   #else
     #error "You must define SPINDLE_PWM_ON_D8 or SPINDLE_PWM_ON_D6 or SPINDLE_PWM_ON_D11 in config.h"
   #endif
