@@ -359,7 +359,7 @@ uint8_t gc_execute_line(char *line)
             #endif
             break;
           case 'L': dword_bit = DWORD_L; gc_block.values.l = int_value; break;
-          case 'N': dword_bit = DWORD_N; gc_block.values.n = trunc(value); 
+          case 'N': dword_bit = DWORD_N; gc_block.values.n = trunc(value);break;
           case 'P': dword_bit = DWORD_P;
             // NOTE: For certain commands, P value must be an integer, This is the case of Digital output M26-M65
             if ((gc_block.non_modal_command >= NON_MODAL_DIGITAL_SYNC_ON) && (gc_block.non_modal_command <= NON_MODAL_DIGITAL_IMMEDIATE_OFF)) {
