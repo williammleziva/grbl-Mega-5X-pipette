@@ -43,17 +43,24 @@
 // #define BAUD_RATE 230400
 #define BAUD_RATE 115200
 
-// Axis array index values. Must start with 0 and be continuous.
-#define N_AXIS 5            // Number of axes (3 to 6)
-#define N_AXIS_LINEAR 3     // Number of linears axis
-
+//----------------------------------------------------------------------
+// Axis definitions :
+//----------------------------------------------------------------------
+// IMPORTANT: When changing the axis definitions (axis numbers N_AXIS, 
+// linears axis number N_AXIS_LINEAR or axes names AXIS_*_NAME, 
+// don't forget to issue the reset factory defaults Grbl command: $RST=*
+// if you forget the $RST=* command after change, Grbl may have 
+// unpredictable behavior!
+//----------------------------------------------------------------------
+#define N_AXIS 5        // Number of axes (3 to 6)
+#define N_AXIS_LINEAR 3 // Number of linears axis, must be <= N_AXIS
+// Axis indexing and names
 #define AXIS_1 0        // Axis indexing value. Must start with 0 and be continuous.
 #define AXIS_1_NAME 'X' // Axis names must be in X, Y, Z, A, B, C, U, V, W, D, E & H.
 #define AXIS_2 1
 #define AXIS_2_NAME 'Y'
 #define AXIS_3 2
 #define AXIS_3_NAME 'Z'
-
 #if N_AXIS <3
   #error "N_AXIS must be >= 3. N_AXIS < 3 is not implemented."
 #endif
@@ -72,6 +79,7 @@
 #if N_AXIS > 6
   #error "N_AXIS must be <= 6. N_AXIS > 6 is not implemented."
 #endif
+//----------------------------------------------------------------------
 
 // Chose the spindle pin output :
 // SPINDLE_PWM_ON_D8  => 0-12v 16 bits PWM on RAMPS D8
