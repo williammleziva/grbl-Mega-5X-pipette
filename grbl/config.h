@@ -88,6 +88,13 @@
 #define SPINDLE_PWM_ON_D8
 //#define SPINDLE_PWM_ON_D6
 
+// PWM signal inversion:
+// In case of particular electronics, it may be necessary to invert the values
+// of the PWM signal of the spindle. For example, if the minimum spindle 
+// rpm is 1 and maximum is 1000, M3S250 will output 75% instead of 25% and
+// M3S750 will output 25% instead of 75%. Disabled by default
+#define INVERT_PWM_VALUES
+
 // Renaming axis doesn't change their number. By default, the status report give axis values in
 // the order of their number. Some graphical interface are not able to affect axis values reported
 // by Grbl to the correct axis name.
