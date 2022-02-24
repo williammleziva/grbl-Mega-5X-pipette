@@ -25,8 +25,8 @@
 #define RX_RING_BUFFER (RX_BUFFER_SIZE+1)
 #define TX_RING_BUFFER (TX_BUFFER_SIZE+1)
 
-uint8_t serial_rx_buffer[RX_RING_BUFFER];
-uint8_t serial_rx_buffer_head = 0;
+volatile uint8_t serial_rx_buffer[RX_RING_BUFFER];
+volatile uint8_t serial_rx_buffer_head = 0;
 volatile uint8_t serial_rx_buffer_tail = 0;
 
 uint8_t serial_tx_buffer[TX_RING_BUFFER];
