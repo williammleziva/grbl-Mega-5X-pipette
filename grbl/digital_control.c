@@ -23,11 +23,30 @@
 
 void digital_init()
 {
+  // Outputs
   DIGITAL_OUTPUT_DDR_0 |= (1 << DIGITAL_OUTPUT_BIT_0); // Configure as output pin.
   DIGITAL_OUTPUT_DDR_1 |= (1 << DIGITAL_OUTPUT_BIT_1); // Configure as output pin.
   DIGITAL_OUTPUT_DDR_2 |= (1 << DIGITAL_OUTPUT_BIT_2); // Configure as output pin.
   DIGITAL_OUTPUT_DDR_3 |= (1 << DIGITAL_OUTPUT_BIT_3); // Configure as output pin.
   digital_stop(0x0F);
+  // Input
+  DIGITAL_INPUT_DDR_0 &= ~(DIGITAL_INPUT_MASK_0); // Configure as input pin
+  DIGITAL_INPUT_DDR_1 &= ~(DIGITAL_INPUT_MASK_1); // Configure as input pin
+  DIGITAL_INPUT_DDR_2 &= ~(DIGITAL_INPUT_MASK_2); // Configure as input pin
+  DIGITAL_INPUT_DDR_3 &= ~(DIGITAL_INPUT_MASK_3); // Configure as input pin
+  #ifdef DISABLE_DIGITAL_INPUT_PIN_PULL_UP
+    DIGITAL_INPUT_PORT_0 &= ~(DIGITAL_INPUT_MASK_0); // Normal low operation. Requires external pull-down.
+    DIGITAL_INPUT_PORT_1 &= ~(DIGITAL_INPUT_MASK_1); // Normal low operation. Requires external pull-down.
+    DIGITAL_INPUT_PORT_2 &= ~(DIGITAL_INPUT_MASK_2); // Normal low operation. Requires external pull-down.
+    DIGITAL_INPUT_PORT_3 &= ~(DIGITAL_INPUT_MASK_3); // Normal low operation. Requires external pull-down.
+  #else
+    DIGITAL_INPUT_PORT_0 |= DIGITAL_INPUT_MASK_0;    // Enable internal pull-up resistors. Normal high operation.
+    DIGITAL_INPUT_PORT_1 |= DIGITAL_INPUT_MASK_1;    // Enable internal pull-up resistors. Normal high operation.
+    DIGITAL_INPUT_PORT_2 |= DIGITAL_INPUT_MASK_2;    // Enable internal pull-up resistors. Normal high operation.
+    DIGITAL_INPUT_PORT_3 |= DIGITAL_INPUT_MASK_3;    // Enable internal pull-up resistors. Normal high operation.
+  #endif
+  probe_configure_invert_mask(false); // Initialize invert mask.
+  
 }
 
 
@@ -35,6 +54,7 @@ void digital_init()
 uint8_t digital_get_state()
 {
   uint8_t digital_state = DIGITAL_OUTPUT_STATE_OFF;
+  // Output status
   #ifdef INVERT_DIGITAL_OUTPUT_PIN_0
     if (bit_isfalse(DIGITAL_OUTPUT_PORT_0,(1 << DIGITAL_OUTPUT_BIT_0))) {
   #else
@@ -62,6 +82,35 @@ uint8_t digital_get_state()
     if (bit_istrue(DIGITAL_OUTPUT_PORT_3,(1 << DIGITAL_OUTPUT_BIT_3))) {
   #endif
     digital_state |= DIGITAL_OUTPUT_STATE_P3;
+  }
+  // Input status
+  #ifdef INVERT_DIGITAL_INPUT_PIN_0
+    if (DIGITAL_INPUT_PIN_0 & DIGITAL_INPUT_MASK_0) {
+  #else
+    if (!(DIGITAL_INPUT_PIN_0 & DIGITAL_INPUT_MASK_0)) {
+  #endif
+    digital_state |= DIGITAL_INPUT_STATE_P0;
+  }
+  #ifdef INVERT_DIGITAL_INPUT_PIN_1
+    if (DIGITAL_INPUT_PIN_1 & DIGITAL_INPUT_MASK_1) {
+  #else
+    if (!(DIGITAL_INPUT_PIN_1 & DIGITAL_INPUT_MASK_1)) {
+  #endif
+    digital_state |= DIGITAL_INPUT_STATE_P1;
+  }
+  #ifdef INVERT_DIGITAL_INPUT_PIN_2
+    if (DIGITAL_INPUT_PIN_2 & DIGITAL_INPUT_MASK_2) {
+  #else
+    if (!(DIGITAL_INPUT_PIN_2 & DIGITAL_INPUT_MASK_2)) {
+  #endif
+    digital_state |= DIGITAL_INPUT_STATE_P2;
+  }
+  #ifdef INVERT_DIGITAL_INPUT_PIN_3
+    if (DIGITAL_INPUT_PIN_3 & DIGITAL_INPUT_MASK_3) {
+  #else
+    if (!(DIGITAL_INPUT_PIN_3 & DIGITAL_INPUT_MASK_3)) {
+  #endif
+    digital_state |= DIGITAL_INPUT_STATE_P3;
   }
   return(digital_state);
 }

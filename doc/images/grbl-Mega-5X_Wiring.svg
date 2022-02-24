@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.56709964"
-     inkscape:cx="295.34878"
-     inkscape:cy="391.65248"
+     inkscape:zoom="0.802"
+     inkscape:cx="520"
+     inkscape:cy="500"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -100,11 +100,20 @@
        y="91.250053" />
     <rect
        style="fill:#abcca8;fill-opacity:1;stroke:#3f3f3f;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="rect1388"
+       width="175"
+       height="75"
+       x="855"
+       y="411.24997"
+       rx="5.0000005"
+       ry="5" />
+    <rect
+       style="fill:#abcca8;fill-opacity:1;stroke:#3f3f3f;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
        id="rect1414"
        width="175"
        height="75"
        x="855"
-       y="336.24997"
+       y="331.24997"
        rx="5.0000005"
        ry="5" />
     <rect
@@ -117,13 +126,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
-       x="217.75493"
-       y="778.27551"
+       x="218.27432"
+       y="752.02478"
        id="text868"><tspan
          sodipodi:role="line"
          id="tspan866"
-         x="217.75493"
-         y="778.27551">axe 1 motor</tspan></text>
+         x="218.27432"
+         y="752.02478">axe 1 motor</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
@@ -2066,7 +2075,7 @@
     </g>
     <path
        style="fill:none;stroke:#00c000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 483.22686,528.74996 -162.5,245 h -40"
+       d="M 483.22686,528.74996 325,746.24998 h -40"
        id="path858"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
@@ -2583,15 +2592,15 @@
        style="fill:none;stroke:#bf003f;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <text
        id="text3074"
-       y="549.21771"
-       x="5.1544418"
+       y="542.64343"
+       x="6.1323195"
        style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          style="font-size:14.6667px"
-         y="549.21771"
-         x="5.1544418"
-         id="tspan3072"
-         sodipodi:role="line">Spindle PWM</tspan></text>
+         y="542.64343"
+         x="6.1323195"
+         sodipodi:role="line"
+         id="tspan1406">Spindle PWM</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
@@ -3232,68 +3241,68 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
-       x="864.16895"
-       y="354.56454"
+       x="863.93604"
+       y="349.48428"
        id="text2439-36"><tspan
          sodipodi:role="line"
          id="tspan2437-75"
-         x="864.16895"
-         y="354.56454"
+         x="863.93604"
+         y="349.48428"
          style="font-size:14.6667px">digital output 0 (D16)</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
-       x="864.16895"
-       y="370.84116"
+       x="863.93604"
+       y="365.76089"
        id="text1390"><tspan
          sodipodi:role="line"
          id="tspan1388"
-         x="864.16895"
-         y="370.84116"
+         x="863.93604"
+         y="365.76089"
          style="font-size:14.6667px">digital output 1 (D17)</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
-       x="864.16895"
-       y="387.11777"
+       x="863.93604"
+       y="382.03751"
        id="text1394"><tspan
          sodipodi:role="line"
          id="tspan1392"
-         x="864.16895"
-         y="387.11777"
+         x="863.93604"
+         y="382.03751"
          style="font-size:14.6667px">digital output 2 (D23)</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
-       x="864.16895"
-       y="403.39438"
+       x="863.93604"
+       y="398.31412"
        id="text1398"><tspan
          sodipodi:role="line"
          id="tspan1396"
-         x="864.16895"
-         y="403.39438"
+         x="863.93604"
+         y="398.31412"
          style="font-size:14.6667px">digital output 3 (D25)</tspan></text>
     <path
        style="fill:none;stroke:#0000af;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 834,399.24998 h 26"
+       d="m 834,399.24998 26,-6"
        id="path1400"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#0000af;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 834,382.24998 h 26"
+       d="m 834,382.24998 26,-6"
        id="path1402"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#0000af;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 834,366.24998 h 26"
+       d="m 834,366.24998 26,-5"
        id="path1404"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#0000af;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 834,350.24998 h 26"
+       d="m 834,350.24998 26,-4"
        id="path1406"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
@@ -3313,5 +3322,112 @@
          y="328.93997"
          style="font-size:10.6667px;text-align:center;text-anchor:middle"
          id="tspan1412">digital outputs</tspan></text>
+    <path
+       style="fill:none;stroke:#0000af;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 834,415.24998 26,6"
+       id="path1380"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000af;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 834,431.24998 26,6"
+       id="path1382"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000af;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 834,447.24998 26,6"
+       id="path1384"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000af;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 834,463.24998 26,6"
+       id="path1386"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+       x="867.67352"
+       y="427.35968"
+       id="text1392"><tspan
+         sodipodi:role="line"
+         id="tspan1390"
+         x="867.67352"
+         y="427.35968"
+         style="font-size:14.6667px">digital input 0 (D27)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+       x="867.67352"
+       y="443.09708"
+       id="text1396"><tspan
+         sodipodi:role="line"
+         id="tspan1394"
+         x="867.67352"
+         y="443.09708"
+         style="font-size:14.6667px">digital input 1 (D29)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+       x="867.67352"
+       y="459.05579"
+       id="text1400"><tspan
+         sodipodi:role="line"
+         id="tspan1398"
+         x="867.67352"
+         y="459.05579"
+         style="font-size:14.6667px">digital input 2 (D31)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+       x="867.67352"
+       y="474.72104"
+       id="text1404"><tspan
+         sodipodi:role="line"
+         id="tspan1402"
+         x="867.67352"
+         y="474.72104"
+         style="font-size:14.6667px">digital input 3 (D33)</tspan></text>
+    <text
+       id="text1413"
+       y="552.33502"
+       x="5.7246222"
+       style="font-style:normal;font-weight:normal;font-size:8px;line-height:10.7143px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+       xml:space="preserve"><tspan
+         y="552.33502"
+         x="5.7246222"
+         sodipodi:role="line"
+         id="tspan1411"
+         style="font-size:8px">(SPINDLE_PWM_ON_D8)</tspan></text>
+    <text
+       id="text1417"
+       y="776.48981"
+       x="291.73077"
+       style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:25px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+       xml:space="preserve"><tspan
+         style="font-size:14.6667px"
+         y="776.48981"
+         x="291.73077"
+         sodipodi:role="line"
+         id="tspan1415">Spindle PWM (D6)</tspan></text>
+    <text
+       id="text1421"
+       y="786.1814"
+       x="308.74005"
+       style="font-style:normal;font-weight:normal;font-size:8px;line-height:10.7143px;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+       xml:space="preserve"><tspan
+         y="786.1814"
+         x="308.74005"
+         sodipodi:role="line"
+         id="tspan1419"
+         style="font-size:8px">(SPINDLE_PWM_ON_D86</tspan></text>
+    <path
+       style="fill:none;stroke:#bf003f;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 485,681.24998 -30,90 h -29"
+       id="path1423"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc" />
   </g>
 </svg>

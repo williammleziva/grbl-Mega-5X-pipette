@@ -26,6 +26,10 @@
 #define DIGITAL_OUTPUT_STATE_P1    bit(1)
 #define DIGITAL_OUTPUT_STATE_P2    bit(2)
 #define DIGITAL_OUTPUT_STATE_P3    bit(3)
+#define DIGITAL_INPUT_STATE_P0     bit(4)
+#define DIGITAL_INPUT_STATE_P1     bit(5)
+#define DIGITAL_INPUT_STATE_P2     bit(6)
+#define DIGITAL_INPUT_STATE_P3     bit(7)
 
 // Initializes digital output control pins.
 void digital_init();

@@ -739,7 +739,7 @@ void report_realtime_status()
       uint8_t sp_state = spindle_get_state();
       uint8_t cl_state = coolant_get_state();
       uint8_t dg_state = digital_get_state();
-      if (sp_state || cl_state || dg_state) {
+      if (sp_state || cl_state || dg_state || 1) {
         printPgmString(PSTR("|A:"));
         if (sp_state) { // != SPINDLE_STATE_DISABLE
           if (sp_state == SPINDLE_STATE_CW) { serial_write('S'); } // CW
@@ -747,8 +747,12 @@ void report_realtime_status()
         }
         if (cl_state & COOLANT_STATE_FLOOD) { serial_write('F'); }
         if (cl_state & COOLANT_STATE_MIST) { serial_write('M'); }
-        if (dg_state) { // One or more digital output is active
+        if (dg_state || 1) { // One or more digital output is active
           serial_write('D');
+          if (dg_state  & DIGITAL_INPUT_STATE_P3) { serial_write('1'); } else {serial_write('0');}
+          if (dg_state  & DIGITAL_INPUT_STATE_P2) { serial_write('1'); } else {serial_write('0');}
+          if (dg_state  & DIGITAL_INPUT_STATE_P1) { serial_write('1'); } else {serial_write('0');}
+          if (dg_state  & DIGITAL_INPUT_STATE_P0) { serial_write('1'); } else {serial_write('0');}
           if (dg_state  & DIGITAL_OUTPUT_STATE_P3) { serial_write('1'); } else {serial_write('0');}
           if (dg_state  & DIGITAL_OUTPUT_STATE_P2) { serial_write('1'); } else {serial_write('0');}
           if (dg_state  & DIGITAL_OUTPUT_STATE_P1) { serial_write('1'); } else {serial_write('0');}

@@ -310,11 +310,17 @@
 
 // Inverts the selected digital output pin from low-disabled/high-enabled to low-enabled/high-disabled.
 // Useful for some pre-built electronic boards.
-// #define INVERT_DIGITAL_OUTPUT_PIN_0 // Default disabled. Uncomment to enable.
-// #define INVERT_DIGITAL_OUTPUT_PIN_1 // Default disabled. Uncomment to enable.
-// #define INVERT_DIGITAL_OUTPUT_PIN_2 // Default disabled. Uncomment to enable.
-// #define INVERT_DIGITAL_OUTPUT_PIN_3 // Default disabled. Uncomment to enable.
+//#define INVERT_DIGITAL_OUTPUT_PIN_0 // Default disabled. Uncomment to enable.
+//#define INVERT_DIGITAL_OUTPUT_PIN_1 // Default disabled. Uncomment to enable.
+//#define INVERT_DIGITAL_OUTPUT_PIN_2 // Default disabled. Uncomment to enable.
+//#define INVERT_DIGITAL_OUTPUT_PIN_3 // Default disabled. Uncomment to enable.
 
+// Invert the digital input status. Default is normaly open switch between pin
+// to GND, uncomment to use normaly closed switch.
+//#define INVERT_DIGITAL_INPUT_PIN_0 // Default disabled. Uncomment to enable.
+//#define INVERT_DIGITAL_INPUT_PIN_1 // Default disabled. Uncomment to enable.
+//#define INVERT_DIGITAL_INPUT_PIN_2 // Default disabled. Uncomment to enable.
+//#define INVERT_DIGITAL_INPUT_PIN_3 // Default disabled. Uncomment to enable.
 
 // When Grbl powers-cycles or is hard reset with the Arduino reset button, Grbl boots up with no ALARM
 // by default. This is to make it as simple as possible for new users to start using Grbl. When homing
@@ -426,6 +432,7 @@
 //#define DISABLE_LIMIT_PIN_PULL_UP
 //#define DISABLE_PROBE_PIN_PULL_UP
 //#define DISABLE_CONTROL_PIN_PULL_UP
+//#define DISABLE_DIGITAL_INPUT_PIN_PULL_UP
 
 // Sets which axis the tool length offset is applied. Assumes the spindle is always parallel with
 // the selected axis with the tool oriented toward the negative direction. In other words, a positive
