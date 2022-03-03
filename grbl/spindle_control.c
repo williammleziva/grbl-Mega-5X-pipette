@@ -165,7 +165,7 @@ void spindle_set_speed(uint16_t pwm_value)
 	  sys.spindle_speed = rpm;
 	  pwm_value = floor((rpm-settings.rpm_min)*pwm_gradient) + SPINDLE_PWM_MIN_VALUE;
 	}
-  #ifdef INVERT_PWM_VALUES
+  #ifndef INVERT_PWM_VALUES
     return(pwm_value);
   #else
     return(SPINDLE_PWM_MAX_VALUE - pwm_value);
