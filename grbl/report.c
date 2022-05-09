@@ -2,7 +2,7 @@
   report.c - reporting and messaging methods
   Part of Grbl
 
-  Copyright (c) 2017-2018 Gauthier Briere
+  Copyright (c) 2017-2022 Gauthier Briere
   Copyright (c) 2012-2016 Sungeun K. Jeon for Gnea Research LLC
 
   Grbl is free software: you can redistribute it and/or modify
@@ -247,7 +247,7 @@ void report_init_message()
 
 // Grbl help message
 void report_grbl_help() {
-  printPgmString(PSTR("[HLP:$$ $# $G $I $N $x=val $Nx=line $J=line $SLP $C $X $H ~ ! ? ctrl-x]\r\n"));
+  printPgmString(PSTR("[HLP:$$ $# $D $G $I $N $x=val $Nx=line $J=line $SLP $C $X $H ~ ! ? ctrl-x]\r\n"));
 }
 
 
@@ -556,6 +556,9 @@ void report_build_info(char *line)
   #ifndef FORCE_BUFFER_SYNC_DURING_WCO_CHANGE // NOTE: Shown when disabled.
     serial_write('W');
   #endif
+  #ifdef USE_DIGITAL_INPUT
+    serial_write('D');
+  #endif
   // NOTE: Compiled values, like override increments/max/min values, may be added at some point later.
   serial_write(',');
   print_uint8_base10(BLOCK_BUFFER_SIZE-1);
@@ -739,7 +742,7 @@ void report_realtime_status()
       uint8_t sp_state = spindle_get_state();
       uint8_t cl_state = coolant_get_state();
       uint8_t dg_state = digital_get_state();
-      if (sp_state || cl_state || dg_state || 1) {
+      if (sp_state || cl_state || dg_state) {
         printPgmString(PSTR("|A:"));
         if (sp_state) { // != SPINDLE_STATE_DISABLE
           if (sp_state == SPINDLE_STATE_CW) { serial_write('S'); } // CW
@@ -747,16 +750,9 @@ void report_realtime_status()
         }
         if (cl_state & COOLANT_STATE_FLOOD) { serial_write('F'); }
         if (cl_state & COOLANT_STATE_MIST) { serial_write('M'); }
-        if (dg_state || 1) { // One or more digital output is active
+        if (dg_state) { // One or more digital output is active
           serial_write('D');
-          if (dg_state  & DIGITAL_INPUT_STATE_P3) { serial_write('1'); } else {serial_write('0');}
-          if (dg_state  & DIGITAL_INPUT_STATE_P2) { serial_write('1'); } else {serial_write('0');}
-          if (dg_state  & DIGITAL_INPUT_STATE_P1) { serial_write('1'); } else {serial_write('0');}
-          if (dg_state  & DIGITAL_INPUT_STATE_P0) { serial_write('1'); } else {serial_write('0');}
-          if (dg_state  & DIGITAL_OUTPUT_STATE_P3) { serial_write('1'); } else {serial_write('0');}
-          if (dg_state  & DIGITAL_OUTPUT_STATE_P2) { serial_write('1'); } else {serial_write('0');}
-          if (dg_state  & DIGITAL_OUTPUT_STATE_P1) { serial_write('1'); } else {serial_write('0');}
-          if (dg_state  & DIGITAL_OUTPUT_STATE_P0) { serial_write('1'); } else {serial_write('0');}
+          printDgState(dg_state);
         }
       }
     }
@@ -764,6 +760,30 @@ void report_realtime_status()
 
   serial_write('>');
   report_util_line_feed();
+}
+
+
+// Print digital input / output status
+void report_digital_status(uint8_t dg_state)
+{
+  printPgmString(PSTR("[D:"));
+  printDgState(dg_state);
+  serial_write(']');
+  report_util_line_feed();
+}
+
+void printDgState(uint8_t dg_state)
+{
+  #ifdef USE_DIGITAL_INPUT
+    if (dg_state  & DIGITAL_INPUT_STATE_P3) { serial_write('1'); } else {serial_write('0');}
+    if (dg_state  & DIGITAL_INPUT_STATE_P2) { serial_write('1'); } else {serial_write('0');}
+    if (dg_state  & DIGITAL_INPUT_STATE_P1) { serial_write('1'); } else {serial_write('0');}
+    if (dg_state  & DIGITAL_INPUT_STATE_P0) { serial_write('1'); } else {serial_write('0');}
+  #endif
+  if (dg_state  & DIGITAL_OUTPUT_STATE_P3) { serial_write('1'); } else {serial_write('0');}
+  if (dg_state  & DIGITAL_OUTPUT_STATE_P2) { serial_write('1'); } else {serial_write('0');}
+  if (dg_state  & DIGITAL_OUTPUT_STATE_P1) { serial_write('1'); } else {serial_write('0');}
+  if (dg_state  & DIGITAL_OUTPUT_STATE_P0) { serial_write('1'); } else {serial_write('0');}
 }
 
 

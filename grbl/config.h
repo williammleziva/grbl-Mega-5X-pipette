@@ -2,7 +2,7 @@
   config.h - compile time configuration
   Part of Grbl
 
-  Copyright (c) 2017-2018 Gauthier Briere
+  Copyright (c) 2017-2022 Gauthier Briere
   Copyright (c) 2012-2016 Sungeun K. Jeon for Gnea Research LLC
   Copyright (c) 2009-2011 Simen Svale Skogsrud
 
@@ -315,6 +315,11 @@
 //#define INVERT_DIGITAL_OUTPUT_PIN_2 // Default disabled. Uncomment to enable.
 //#define INVERT_DIGITAL_OUTPUT_PIN_3 // Default disabled. Uncomment to enable.
 
+// Digital inputs: Uncomment the folloing line to enable the use of up to
+// 4 digital input pins. Digital inputs work in the same way as the other input 
+#define USE_DIGITAL_INPUT // Default disabled. Uncomment to enable.
+
+// pins (probe, safety door, cycle start, reset, feed hold). 
 // Invert the digital input status. Default is normaly open switch between pin
 // to GND, uncomment to use normaly closed switch.
 //#define INVERT_DIGITAL_INPUT_PIN_0 // Default disabled. Uncomment to enable.

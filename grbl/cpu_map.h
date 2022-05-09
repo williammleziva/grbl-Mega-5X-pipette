@@ -2,7 +2,7 @@
   cpu_map.h - CPU and pin mapping configuration file
   Part of Grbl
 
-  Copyright (c) 2017-2018 Gauthier Briere
+  Copyright (c) 2017-2022 Gauthier Briere
   Copyright (c) 2012-2016 Sungeun K. Jeon for Gnea Research LLC
 
   Grbl is free software: you can redistribute it and/or modify
@@ -257,39 +257,43 @@
   #define PROBE_BIT       7  // MEGA2560 Analog Pin 15
   #define PROBE_MASK      (1<<PROBE_BIT)
 
-  // Define Analog input
-  #define ANALOG_INPUT_DDR_0   DDRK
-  #define ANALOG_INPUT_PIN_0   PINK
-  #define ANALOG_INPUT_PORT_0  PORTK
-  #define ANALOG_INPUT_BIT_0   6 // MEGA2560 Analog Pin 14
-  #define ANALOG_INPUT_MASK_0  (1<<ANALOG_INPUT_BIT_0)
-  #define ANALOG_INPUT_DDR_1   DDRK
-  #define ANALOG_INPUT_PIN_1   PINK
-  #define ANALOG_INPUT_PORT_1  PORTK
-  #define ANALOG_INPUT_BIT_1   5 // MEGA2560 Analog Pin 13
-  #define ANALOG_INPUT_MASK_1  (1<<ANALOG_INPUT_BIT_1)
+  #ifdef USE_ANALOG_INPUT
+    // Define Analog input
+    #define ANALOG_INPUT_DDR_0   DDRK
+    #define ANALOG_INPUT_PIN_0   PINK
+    #define ANALOG_INPUT_PORT_0  PORTK
+    #define ANALOG_INPUT_BIT_0   6 // MEGA2560 Analog Pin 14
+    #define ANALOG_INPUT_MASK_0  (1<<ANALOG_INPUT_BIT_0)
+    #define ANALOG_INPUT_DDR_1   DDRK
+    #define ANALOG_INPUT_PIN_1   PINK
+    #define ANALOG_INPUT_PORT_1  PORTK
+    #define ANALOG_INPUT_BIT_1   5 // MEGA2560 Analog Pin 13
+    #define ANALOG_INPUT_MASK_1  (1<<ANALOG_INPUT_BIT_1)
+  #endif
 
-  // Define digital input
-  #define DIGITAL_INPUT_DDR_0   DDRA
-  #define DIGITAL_INPUT_PIN_0   PINA
-  #define DIGITAL_INPUT_PORT_0  PORTA
-  #define DIGITAL_INPUT_BIT_0   5 // MEGA2560 Port D27
-  #define DIGITAL_INPUT_MASK_0  (1<<DIGITAL_INPUT_BIT_0)
-  #define DIGITAL_INPUT_DDR_1   DDRA
-  #define DIGITAL_INPUT_PIN_1   PINA
-  #define DIGITAL_INPUT_PORT_1  PORTA
-  #define DIGITAL_INPUT_BIT_1   7 // MEGA2560 Port D29
-  #define DIGITAL_INPUT_MASK_1  (1<<DIGITAL_INPUT_BIT_1)
-  #define DIGITAL_INPUT_DDR_2   DDRC
-  #define DIGITAL_INPUT_PIN_2   PINC
-  #define DIGITAL_INPUT_PORT_2  PORTC
-  #define DIGITAL_INPUT_BIT_2   6 // MEGA2560 Port D31
-  #define DIGITAL_INPUT_MASK_2  (1<<DIGITAL_INPUT_BIT_2)
-  #define DIGITAL_INPUT_DDR_3   DDRC
-  #define DIGITAL_INPUT_PIN_3   PINC
-  #define DIGITAL_INPUT_PORT_3  PORTC
-  #define DIGITAL_INPUT_BIT_3   4 // MEGA2560 Port D33
-  #define DIGITAL_INPUT_MASK_3  (1<<DIGITAL_INPUT_BIT_3)
+  #ifdef USE_DIGITAL_INPUT
+    // Define digital input
+    #define DIGITAL_INPUT_DDR_0   DDRA
+    #define DIGITAL_INPUT_PIN_0   PINA
+    #define DIGITAL_INPUT_PORT_0  PORTA
+    #define DIGITAL_INPUT_BIT_0   5 // MEGA2560 Port D27
+    #define DIGITAL_INPUT_MASK_0  (1<<DIGITAL_INPUT_BIT_0)
+    #define DIGITAL_INPUT_DDR_1   DDRA
+    #define DIGITAL_INPUT_PIN_1   PINA
+    #define DIGITAL_INPUT_PORT_1  PORTA
+    #define DIGITAL_INPUT_BIT_1   7 // MEGA2560 Port D29
+    #define DIGITAL_INPUT_MASK_1  (1<<DIGITAL_INPUT_BIT_1)
+    #define DIGITAL_INPUT_DDR_2   DDRC
+    #define DIGITAL_INPUT_PIN_2   PINC
+    #define DIGITAL_INPUT_PORT_2  PORTC
+    #define DIGITAL_INPUT_BIT_2   6 // MEGA2560 Port D31
+    #define DIGITAL_INPUT_MASK_2  (1<<DIGITAL_INPUT_BIT_2)
+    #define DIGITAL_INPUT_DDR_3   DDRC
+    #define DIGITAL_INPUT_PIN_3   PINC
+    #define DIGITAL_INPUT_PORT_3  PORTC
+    #define DIGITAL_INPUT_BIT_3   4 // MEGA2560 Port D33
+    #define DIGITAL_INPUT_MASK_3  (1<<DIGITAL_INPUT_BIT_3)
+  #endif
 
   //-------------------------------------------------------------------------------------------------------
   // Advanced Configuration Below You should not need to touch these variables

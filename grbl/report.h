@@ -2,6 +2,7 @@
   report.h - reporting and messaging methods
   Part of Grbl
 
+  Copyright (c) 2017-2022 Gauthier Briere
   Copyright (c) 2012-2016 Sungeun K. Jeon for Gnea Research LLC
 
   Grbl is free software: you can redistribute it and/or modify
@@ -123,6 +124,10 @@ void report_execute_startup_message(char *line, uint8_t status_code);
 
 // Prints build info and user info
 void report_build_info(char *line);
+
+// Print digital input / output status
+void report_digital_status(uint8_t dg_state);
+void printDgState(uint8_t dg_state);
 
 #ifdef DEBUG
   void report_debug_string(char *line);

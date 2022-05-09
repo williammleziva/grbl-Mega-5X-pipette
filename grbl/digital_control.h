@@ -2,7 +2,7 @@
   digital_control.h - digital output M62-M65 control methods
   Part of Grbl
 
-  Copyright (c) 2017-2021 Gauthier Briere
+  Copyright (c) 2017-2022 Gauthier Briere
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,10 +26,12 @@
 #define DIGITAL_OUTPUT_STATE_P1    bit(1)
 #define DIGITAL_OUTPUT_STATE_P2    bit(2)
 #define DIGITAL_OUTPUT_STATE_P3    bit(3)
-#define DIGITAL_INPUT_STATE_P0     bit(4)
-#define DIGITAL_INPUT_STATE_P1     bit(5)
-#define DIGITAL_INPUT_STATE_P2     bit(6)
-#define DIGITAL_INPUT_STATE_P3     bit(7)
+#ifdef USE_DIGITAL_INPUT
+  #define DIGITAL_INPUT_STATE_P0     bit(4)
+  #define DIGITAL_INPUT_STATE_P1     bit(5)
+  #define DIGITAL_INPUT_STATE_P2     bit(6)
+  #define DIGITAL_INPUT_STATE_P3     bit(7)
+#endif
 
 // Initializes digital output control pins.
 void digital_init();

@@ -2,7 +2,7 @@
   grbl.h - main Grbl include file
   Part of Grbl
 
-  Copyright (c) 2017-2018 Gauthier Briere
+  Copyright (c) 2017-2022 Gauthier Briere
   Copyright (c) 2015-2016 Sungeun K. Jeon for Gnea Research LLC
 
   Grbl is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@
 #define grbl_h
 
 // Grbl versioning system
-#define GRBL_VERSION "1.2e"
-#define GRBL_VERSION_BUILD "20220303"
+#define GRBL_VERSION "1.2f"
+#define GRBL_VERSION_BUILD "20220509"
 
 // Define standard libraries used by Grbl.
 #include <avr/io.h>

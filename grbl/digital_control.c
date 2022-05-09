@@ -2,7 +2,7 @@
   digital_control.c - digital output M62-M65 control methods
   Part of Grbl
 
-  Copyright (c) 2017-2021 Gauthier Briere
+  Copyright (c) 2017-2022 Gauthier Briere
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -29,24 +29,24 @@ void digital_init()
   DIGITAL_OUTPUT_DDR_2 |= (1 << DIGITAL_OUTPUT_BIT_2); // Configure as output pin.
   DIGITAL_OUTPUT_DDR_3 |= (1 << DIGITAL_OUTPUT_BIT_3); // Configure as output pin.
   digital_stop(0x0F);
-  // Input
-  DIGITAL_INPUT_DDR_0 &= ~(DIGITAL_INPUT_MASK_0); // Configure as input pin
-  DIGITAL_INPUT_DDR_1 &= ~(DIGITAL_INPUT_MASK_1); // Configure as input pin
-  DIGITAL_INPUT_DDR_2 &= ~(DIGITAL_INPUT_MASK_2); // Configure as input pin
-  DIGITAL_INPUT_DDR_3 &= ~(DIGITAL_INPUT_MASK_3); // Configure as input pin
-  #ifdef DISABLE_DIGITAL_INPUT_PIN_PULL_UP
-    DIGITAL_INPUT_PORT_0 &= ~(DIGITAL_INPUT_MASK_0); // Normal low operation. Requires external pull-down.
-    DIGITAL_INPUT_PORT_1 &= ~(DIGITAL_INPUT_MASK_1); // Normal low operation. Requires external pull-down.
-    DIGITAL_INPUT_PORT_2 &= ~(DIGITAL_INPUT_MASK_2); // Normal low operation. Requires external pull-down.
-    DIGITAL_INPUT_PORT_3 &= ~(DIGITAL_INPUT_MASK_3); // Normal low operation. Requires external pull-down.
-  #else
-    DIGITAL_INPUT_PORT_0 |= DIGITAL_INPUT_MASK_0;    // Enable internal pull-up resistors. Normal high operation.
-    DIGITAL_INPUT_PORT_1 |= DIGITAL_INPUT_MASK_1;    // Enable internal pull-up resistors. Normal high operation.
-    DIGITAL_INPUT_PORT_2 |= DIGITAL_INPUT_MASK_2;    // Enable internal pull-up resistors. Normal high operation.
-    DIGITAL_INPUT_PORT_3 |= DIGITAL_INPUT_MASK_3;    // Enable internal pull-up resistors. Normal high operation.
+  #ifdef USE_DIGITAL_INPUT
+    // Input
+    DIGITAL_INPUT_DDR_0 &= ~(DIGITAL_INPUT_MASK_0); // Configure as input pin
+    DIGITAL_INPUT_DDR_1 &= ~(DIGITAL_INPUT_MASK_1); // Configure as input pin
+    DIGITAL_INPUT_DDR_2 &= ~(DIGITAL_INPUT_MASK_2); // Configure as input pin
+    DIGITAL_INPUT_DDR_3 &= ~(DIGITAL_INPUT_MASK_3); // Configure as input pin
+    #ifdef DISABLE_DIGITAL_INPUT_PIN_PULL_UP
+      DIGITAL_INPUT_PORT_0 &= ~(DIGITAL_INPUT_MASK_0); // Normal low operation. Requires external pull-down.
+      DIGITAL_INPUT_PORT_1 &= ~(DIGITAL_INPUT_MASK_1); // Normal low operation. Requires external pull-down.
+      DIGITAL_INPUT_PORT_2 &= ~(DIGITAL_INPUT_MASK_2); // Normal low operation. Requires external pull-down.
+      DIGITAL_INPUT_PORT_3 &= ~(DIGITAL_INPUT_MASK_3); // Normal low operation. Requires external pull-down.
+    #else
+      DIGITAL_INPUT_PORT_0 |= DIGITAL_INPUT_MASK_0;    // Enable internal pull-up resistors. Normal high operation.
+      DIGITAL_INPUT_PORT_1 |= DIGITAL_INPUT_MASK_1;    // Enable internal pull-up resistors. Normal high operation.
+      DIGITAL_INPUT_PORT_2 |= DIGITAL_INPUT_MASK_2;    // Enable internal pull-up resistors. Normal high operation.
+      DIGITAL_INPUT_PORT_3 |= DIGITAL_INPUT_MASK_3;    // Enable internal pull-up resistors. Normal high operation.
+    #endif
   #endif
-  probe_configure_invert_mask(false); // Initialize invert mask.
-  
 }
 
 
@@ -84,34 +84,36 @@ uint8_t digital_get_state()
     digital_state |= DIGITAL_OUTPUT_STATE_P3;
   }
   // Input status
-  #ifdef INVERT_DIGITAL_INPUT_PIN_0
-    if (DIGITAL_INPUT_PIN_0 & DIGITAL_INPUT_MASK_0) {
-  #else
-    if (!(DIGITAL_INPUT_PIN_0 & DIGITAL_INPUT_MASK_0)) {
+  #ifdef USE_DIGITAL_INPUT
+    #ifdef INVERT_DIGITAL_INPUT_PIN_0
+      if (DIGITAL_INPUT_PIN_0 & DIGITAL_INPUT_MASK_0) {
+    #else
+      if (!(DIGITAL_INPUT_PIN_0 & DIGITAL_INPUT_MASK_0)) {
+    #endif
+      digital_state |= DIGITAL_INPUT_STATE_P0;
+    }
+    #ifdef INVERT_DIGITAL_INPUT_PIN_1
+      if (DIGITAL_INPUT_PIN_1 & DIGITAL_INPUT_MASK_1) {
+    #else
+      if (!(DIGITAL_INPUT_PIN_1 & DIGITAL_INPUT_MASK_1)) {
+    #endif
+      digital_state |= DIGITAL_INPUT_STATE_P1;
+    }
+    #ifdef INVERT_DIGITAL_INPUT_PIN_2
+      if (DIGITAL_INPUT_PIN_2 & DIGITAL_INPUT_MASK_2) {
+    #else
+      if (!(DIGITAL_INPUT_PIN_2 & DIGITAL_INPUT_MASK_2)) {
+    #endif
+      digital_state |= DIGITAL_INPUT_STATE_P2;
+    }
+    #ifdef INVERT_DIGITAL_INPUT_PIN_3
+      if (DIGITAL_INPUT_PIN_3 & DIGITAL_INPUT_MASK_3) {
+    #else
+      if (!(DIGITAL_INPUT_PIN_3 & DIGITAL_INPUT_MASK_3)) {
+    #endif
+      digital_state |= DIGITAL_INPUT_STATE_P3;
+    }
   #endif
-    digital_state |= DIGITAL_INPUT_STATE_P0;
-  }
-  #ifdef INVERT_DIGITAL_INPUT_PIN_1
-    if (DIGITAL_INPUT_PIN_1 & DIGITAL_INPUT_MASK_1) {
-  #else
-    if (!(DIGITAL_INPUT_PIN_1 & DIGITAL_INPUT_MASK_1)) {
-  #endif
-    digital_state |= DIGITAL_INPUT_STATE_P1;
-  }
-  #ifdef INVERT_DIGITAL_INPUT_PIN_2
-    if (DIGITAL_INPUT_PIN_2 & DIGITAL_INPUT_MASK_2) {
-  #else
-    if (!(DIGITAL_INPUT_PIN_2 & DIGITAL_INPUT_MASK_2)) {
-  #endif
-    digital_state |= DIGITAL_INPUT_STATE_P2;
-  }
-  #ifdef INVERT_DIGITAL_INPUT_PIN_3
-    if (DIGITAL_INPUT_PIN_3 & DIGITAL_INPUT_MASK_3) {
-  #else
-    if (!(DIGITAL_INPUT_PIN_3 & DIGITAL_INPUT_MASK_3)) {
-  #endif
-    digital_state |= DIGITAL_INPUT_STATE_P3;
-  }
   return(digital_state);
 }
 

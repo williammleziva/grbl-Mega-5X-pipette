@@ -2,7 +2,7 @@
   system.c - Handles system level commands and real-time processes
   Part of Grbl
 
-  Copyright (c) 2017-2018 Gauthier Briere
+  Copyright (c) 2017-2022 Gauthier Briere
   Copyright (c) 2014-2016 Sungeun K. Jeon for Gnea Research LLC
 
   Grbl is free software: you can redistribute it and/or modify
@@ -122,7 +122,7 @@ uint8_t system_execute_line(char *line)
       if(line[2] != '=') { return(STATUS_INVALID_STATEMENT); }
       return(gc_execute_line(line)); // NOTE: $J= is ignored inside g-code parser and used to detect jog motions.
       break;
-    case '$': case 'G': case 'C': case 'X':
+    case '$': case 'G': case 'C': case 'X': case 'D':
       if ( line[2] != 0 ) { return(STATUS_INVALID_STATEMENT); }
       switch( line[1] ) {
         case '$' : // Prints Grbl settings
@@ -154,6 +154,15 @@ uint8_t system_execute_line(char *line)
             sys.state = STATE_IDLE;
             // Don't run startup script. Prevents stored moves in startup from causing accidents.
           } // Otherwise, no effect.
+          break;
+        case 'D' : // Show digital input / output status
+          if ( line[2] != 0 ) {
+            return(STATUS_INVALID_STATEMENT);
+          }
+          else {
+            uint8_t dg_state = digital_get_state();
+            report_digital_status(dg_state);
+          }
           break;
       }
       break;

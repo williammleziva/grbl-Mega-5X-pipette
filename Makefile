@@ -1,5 +1,6 @@
 #  Part of Grbl
 #
+#  Copyright (c) 2017-2022 Gauthier Briere
 #  Copyright (c) 2009-2011 Simen Svale Skogsrud
 #  Copyright (c) 2012-2015 Sungeun K. Jeon
 #
@@ -30,14 +31,17 @@
 
 DEVICE     ?= atmega2560
 CLOCK      = 16000000L
-###PROGRAMMER ?= -c avrisp2 -P usb
+
 DEVICE_PORT ?= /dev/ttyUSB0
 PROGRAMMER ?= -D -v -c avrisp2 -P $(DEVICE_PORT)
+
 SOURCE    = main.c motion_control.c gcode.c spindle_control.c coolant_control.c digital_control.c\
             serial.c protocol.c stepper.c eeprom.c settings.c planner.c nuts_bolts.c limits.c \
-            print.c probe.c report.c system.c sleep.c jog.c
+            analog_control.c print.c probe.c report.c system.c sleep.c jog.c
+
 BUILDDIR = build
 SOURCEDIR = grbl
+
 # FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0x24:m
 FUSES      = -U hfuse:w:0xd2:m -U lfuse:w:0xff:m
 
