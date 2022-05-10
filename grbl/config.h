@@ -317,7 +317,7 @@
 
 // Digital inputs: Uncomment the folloing line to enable the use of up to
 // 4 digital input pins. Digital inputs work in the same way as the other input 
-#define USE_DIGITAL_INPUT // Default disabled. Uncomment to enable.
+//#define USE_DIGITAL_INPUT // Default disabled. Uncomment to enable.
 
 // pins (probe, safety door, cycle start, reset, feed hold). 
 // Invert the digital input status. Default is normaly open switch between pin
