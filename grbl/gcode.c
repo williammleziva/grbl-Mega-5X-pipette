@@ -77,6 +77,9 @@ uint8_t gc_execute_line(char *line)
   memset(&gc_block, 0, sizeof(parser_block_t)); // Initialize the parser block struct.
   memcpy(&gc_block.modal,&gc_state.modal,sizeof(gc_modal_t)); // Copy current modes
 
+  // Keep track of current tool number (set tool number modal)
+  gc_block.values.t = gc_state.tool;
+
   uint8_t axis_command = AXIS_COMMAND_NONE;
   uint8_t axis_0, axis_1, axis_linear;
   uint8_t axis_a, axis_b, axis_c;
