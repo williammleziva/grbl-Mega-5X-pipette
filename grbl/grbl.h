@@ -23,8 +23,8 @@
 #define grbl_h
 
 // Grbl versioning system
-#define GRBL_VERSION "1.2f"
-#define GRBL_VERSION_BUILD "20220509"
+#define GRBL_VERSION "1.2g"
+#define GRBL_VERSION_BUILD "20220620"
 
 // Define standard libraries used by Grbl.
 #include <avr/io.h>
@@ -49,6 +49,7 @@
 #include "planner.h"
 #include "coolant_control.h"
 #include "digital_control.h"
+#include "analog_control.h"
 #include "eeprom.h"
 #include "gcode.h"
 #include "limits.h"

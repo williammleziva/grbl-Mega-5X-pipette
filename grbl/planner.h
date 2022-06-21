@@ -75,15 +75,21 @@ typedef struct {
 
   // Stored spindle speed data used by spindle overrides and resuming methods.
   float spindle_speed;    // Block spindle speed. Copied from pl_line_data.
+  #ifdef USE_OUTPUT_PWM
+    float output_volts; // Block output PWM value. Copied from pl_line_data.
+  #endif
 } plan_block_t;
 
 
 // Planner data prototype. Must be used when passing new motions to the planner.
 typedef struct {
-  float feed_rate;          // Desired feed rate for line motion. Value is ignored, if rapid motion.
-  float spindle_speed;      // Desired spindle speed through line motion.
+  float feed_rate;        // Desired feed rate for line motion. Value is ignored, if rapid motion.
+  float spindle_speed;    // Desired spindle speed through line motion.
+  #ifdef USE_OUTPUT_PWM
+    float output_volts;   // Desired output PWM value for line motion. Value is ignored, if rapid motion.
+  #endif
   int32_t line_number;    // Desired line number to report when executing.
-  uint8_t condition;        // Bitflag variable to indicate planner conditions. See defines above.
+  uint8_t condition;      // Bitflag variable to indicate planner conditions. See defines above.
 } plan_line_data_t;
 
 

@@ -21,13 +21,31 @@
 #ifndef analog_control_h
 #define analog_control_h
 
+#define OUTPUT_PWM_STATE_OFF  0 // Must be 0
+#define OUTPUT_PWM_STATE_ON       bit(0)
+
 #ifndef cbi
-#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+  #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
 #ifndef sbi
-#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+  #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
-float readAnalog();
+#ifdef USE_OUTPUT_PWM
+
+float o_pwm_gradient();
+
+  void output_pwm_init();
+  uint8_t output_pwm_get_state();
+  void output_pwm_stop();
+  void output_pwm_set_value(uint16_t pwm_value);
+  uint16_t output_compute_pwm_value(float volts);
+  void output_pwm_set_state(uint8_t state, float volts);
+  void output_pwm_sync(uint8_t state, float volts);
+#endif // USE_OUTPUT_PWM
+
+#ifdef USE_ANALOG_INPUTS
+  float readAnalog();
+#endif // USE_ANALOG_INPUTS
 
 #endif

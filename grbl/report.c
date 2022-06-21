@@ -277,6 +277,10 @@ void report_grbl_settings() {
   report_util_float_setting(30,settings.rpm_max,N_DECIMAL_RPMVALUE);
   report_util_float_setting(31,settings.rpm_min,N_DECIMAL_RPMVALUE);
   report_util_uint8_setting(32,bit_istrue(settings.flags,BITFLAG_LASER_MODE));
+  #ifdef USE_OUTPUT_PWM
+    report_util_float_setting(35,settings.volts_max, N_DECIMAL_SETTINGVALUE);
+    report_util_float_setting(36,settings.volts_min, N_DECIMAL_SETTINGVALUE);
+  #endif
   // Print axis settings
   uint8_t idx, set_idx;
   uint8_t val = AXIS_SETTINGS_START_VAL;
@@ -507,6 +511,10 @@ void report_build_info(char *line)
   #endif
   report_util_feedback_line_feed();
   printPgmString(PSTR("[OPT:")); // Generate compile-time build option list
+  //--------------------------------------------------------------------
+  // ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*$# => Lettre flag
+  // ! !!! !!!  !!!!! ! ! !!  !!         !!! => ! = Utilisée
+  //--------------------------------------------------------------------
   serial_write('V'); // Variable spindle standard.
   serial_write('N'); // Line number reporting standard.
   serial_write('M'); // M7 mist coolant standard.
@@ -525,6 +533,9 @@ void report_build_info(char *line)
   #endif
   #ifdef LIMITS_TWO_SWITCHES_ON_AXES
     serial_write('T');
+  #endif
+  #ifdef USE_OUTPUT_PWM
+    serial_write('O');
   #endif
   #ifdef ALLOW_FEED_OVERRIDE_DURING_PROBE_CYCLES
     serial_write('A');
@@ -727,11 +738,14 @@ void report_realtime_status()
   #endif
 
   #ifdef REPORT_FIELD_OVERRIDES
-    if (sys.report_ovr_counter > 0) { sys.report_ovr_counter--; }
-    else {
+    if (sys.report_ovr_counter > 0) {
+      sys.report_ovr_counter--;
+    } else {
       if (sys.state & (STATE_HOMING | STATE_CYCLE | STATE_HOLD | STATE_JOG | STATE_SAFETY_DOOR)) {
         sys.report_ovr_counter = (REPORT_OVR_REFRESH_BUSY_COUNT-1); // Reset counter for slow refresh
-      } else { sys.report_ovr_counter = (REPORT_OVR_REFRESH_IDLE_COUNT-1); }
+      } else {
+        sys.report_ovr_counter = (REPORT_OVR_REFRESH_IDLE_COUNT-1);
+      }
       printPgmString(PSTR("|Ov:"));
       print_uint8_base10(sys.f_override);
       serial_write(',');
@@ -754,7 +768,23 @@ void report_realtime_status()
           serial_write('D');
           printDgState(dg_state);
         }
+        #ifdef USE_OUTPUT_PWM
+        #endif
       }
+    }
+  #endif
+
+  #ifdef USE_OUTPUT_PWM
+    uint8_t ot_state = output_pwm_get_state();
+    if (ot_state) { // Analog output (PWM) in active
+      printPgmString(PSTR("|O:"));
+      printFloat(sys.output_volts, N_DECIMAL_SETTINGVALUE);
+      /* pour debug calculs PWM
+      * serial_write(',');
+      * print_uint8_base10(output_compute_pwm_value(sys.output_volts));
+      * serial_write(',');
+      * printFloat(o_pwm_gradient(), N_DECIMAL_SETTINGVALUE);
+      */
     }
   #endif
 

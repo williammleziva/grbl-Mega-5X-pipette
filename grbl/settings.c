@@ -34,6 +34,10 @@ const __flash settings_t defaults = {
     .arc_tolerance = DEFAULT_ARC_TOLERANCE,
     .rpm_max = DEFAULT_SPINDLE_RPM_MAX,
     .rpm_min = DEFAULT_SPINDLE_RPM_MIN,
+    #ifdef USE_OUTPUT_PWM
+      .volts_max = DEFAULT_OUTPUT_PWM_MAX,
+      .volts_min = DEFAULT_OUTPUT_PWM_MIN,
+    #endif
     .homing_dir_mask = DEFAULT_HOMING_DIR_MASK,
     .homing_feed_rate = DEFAULT_HOMING_FEED_RATE,
     .homing_seek_rate = DEFAULT_HOMING_SEEK_RATE,
@@ -309,6 +313,10 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
         if (int_value) { settings.flags |= BITFLAG_LASER_MODE; }
         else { settings.flags &= ~BITFLAG_LASER_MODE; }
         break;
+      #ifdef USE_OUTPUT_PWM
+        case 35: settings.volts_max = value; output_pwm_init(); break;
+        case 36: settings.volts_min = value; output_pwm_init(); break;
+      #endif
       default:
         return(STATUS_INVALID_STATEMENT);
     }
