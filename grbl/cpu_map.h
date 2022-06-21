@@ -445,6 +445,13 @@
 
     #elif defined (OUTPUT_PWM_ON_D8)
 
+      // Error if both spindle and analog output are defined on the same output
+      #ifdef SPINDLE_PWM_ON_D8
+        #error "Spindle is already defined on D8, you cant use the same D8 pin for analog output!"
+      #endif
+      #ifdef SPINDLE_PWM_ON_D6
+        #error "Spindle is defined on D6 which use the same timer than D8, you cant use D8 pin for analog output!"
+      #endif
       // Set Timer up to use TIMER4B which is attached to Digital Pin 8 - Ramps 1.4 12v output with heat sink
       #define OUTPUT_PWM_MAX_VALUE     1024.0 // Translates to about 1.9 kHz PWM frequency at 1/8 prescaler
       #ifndef OUTPUT_PWM_MIN_VALUE
@@ -472,6 +479,13 @@
 
     #elif defined (OUTPUT_PWM_ON_D6)
 
+      // Error if both spindle and analog output are defined on the same output
+      #ifdef SPINDLE_PWM_ON_D6
+        #error "Spindle is already defined on D6, you cant use the same D6 pin for analog output!"
+      #endif
+      #ifdef SPINDLE_PWM_ON_D8
+        #error "Spindle is defined on D8 which use the same timer than D6, you cant use D6 pin for analog output!"
+      #endif
       // Set Timer up to use TIMER4C which is attached to Digital Pin 6 - Ramps Servo 2
       #define OUTPUT_PWM_MAX_VALUE     255.0 // Translates to about 1.9 kHz PWM frequency at 1/8 prescaler
       #ifndef OUTPUT_PWM_MIN_VALUE
