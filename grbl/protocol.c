@@ -536,7 +536,9 @@ static void protocol_exec_rt_suspend()
 
   while (sys.suspend) {
 
-    if (sys.abort) { return; }
+    if (sys.abort) {
+      return;
+    }
 
     // Block until initial hold is complete and the machine has stopped motion.
     if (sys.suspend & SUSPEND_HOLD_COMPLETE) {

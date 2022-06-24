@@ -508,6 +508,9 @@ int main(void)
     serial_reset_read_buffer(); // Clear serial read buffer
     gc_init(); // Set g-code parser to default state
     spindle_init();
+    #ifdef USE_OUTPUT_PWM
+      output_pwm_init();
+    #endif
     coolant_init();
     digital_init();
     limits_init();

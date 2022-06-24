@@ -136,6 +136,9 @@ typedef struct {
     uint8_t override_ctrl;     // Tracks override control states.
   #endif
   float spindle_speed;
+  #ifdef USE_OUTPUT_PWM
+    float output_volts; // GBGB TODO: Implémenter de la même manière que spindle_speed...
+  #endif
 } system_t;
 extern system_t sys;
 

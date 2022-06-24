@@ -34,6 +34,14 @@ const __flash settings_t defaults = {
     .arc_tolerance = DEFAULT_ARC_TOLERANCE,
     .rpm_max = DEFAULT_SPINDLE_RPM_MAX,
     .rpm_min = DEFAULT_SPINDLE_RPM_MIN,
+    #ifdef SEPARATE_SPINDLE_LASER_PIN
+      .laser_max = DEFAULT_LASER_MAX,
+      .laser_min = DEFAULT_LASER_MIN,
+    #endif
+    #ifdef USE_OUTPUT_PWM
+      .volts_max = DEFAULT_OUTPUT_MAX,
+      .volts_min = DEFAULT_OUTPUT_MIN,
+    #endif
     .homing_dir_mask = DEFAULT_HOMING_DIR_MASK,
     .homing_feed_rate = DEFAULT_HOMING_FEED_RATE,
     .homing_seek_rate = DEFAULT_HOMING_SEEK_RATE,
@@ -308,7 +316,18 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
       case 32:
         if (int_value) { settings.flags |= BITFLAG_LASER_MODE; }
         else { settings.flags &= ~BITFLAG_LASER_MODE; }
+        #ifdef SEPARATE_SPINDLE_LASER_PIN
+          spindle_init(); // Re-initialize spindle / laser calibration
+        #endif
         break;
+      #ifdef SEPARATE_SPINDLE_LASER_PIN
+        case 33: settings.laser_max = value; spindle_init(); break; // Re-initialize laser calibration
+        case 34: settings.laser_min = value; spindle_init(); break; // Re-initialize laser calibration
+      #endif
+      #ifdef USE_OUTPUT_PWM
+        case 35: settings.volts_max = value; output_pwm_init(); break;
+        case 36: settings.volts_min = value; output_pwm_init(); break;
+      #endif
       default:
         return(STATUS_INVALID_STATEMENT);
     }
@@ -324,7 +343,14 @@ void settings_init() {
     report_status_message(STATUS_SETTING_READ_FAIL);
     settings_restore(SETTINGS_RESTORE_ALL); // Force restore all EEPROM data.
     report_grbl_settings();
+    do {} while (is_report_grbl_settings_running()); // Wait for report settings complete
   }
+  #ifdef DEBUG
+  else
+  {
+    report_debug_string("settings_init() Ok.");
+  }
+  #endif
 }
 
 

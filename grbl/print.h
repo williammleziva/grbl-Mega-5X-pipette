@@ -30,6 +30,7 @@ void printPgmString(const char *s);
 
 void printInteger(long n);
 
+void print_uint16_base10(uint16_t n);
 void print_uint32_base10(uint32_t n);
 
 // Prints an uint8 variable in base 10.

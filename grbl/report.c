@@ -30,6 +30,8 @@
 #include "grbl.h"
 #include <stdarg.h>
 
+static uint8_t report_grbl_settings_running;
+
 // Internal report utilities to reduce flash with repetitive tasks turned into functions.
 void report_util_setting_prefix(uint8_t n) { serial_write('$'); print_uint8_base10(n); serial_write('='); }
 static void report_util_line_feed() { printPgmString(PSTR("\r\n")); }
@@ -255,6 +257,7 @@ void report_grbl_help() {
 // NOTE: The numbering scheme here must correlate to storing in settings.c
 void report_grbl_settings() {
   // Print Grbl settings.
+  report_grbl_settings_running = 1; // Flag for long report
   report_util_uint8_setting(0,settings.pulse_microseconds);
   report_util_uint8_setting(1,settings.stepper_idle_lock_time);
   report_util_uint8_setting(2,settings.step_invert_mask);
@@ -277,6 +280,14 @@ void report_grbl_settings() {
   report_util_float_setting(30,settings.rpm_max,N_DECIMAL_RPMVALUE);
   report_util_float_setting(31,settings.rpm_min,N_DECIMAL_RPMVALUE);
   report_util_uint8_setting(32,bit_istrue(settings.flags,BITFLAG_LASER_MODE));
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+    report_util_float_setting(33,settings.laser_max, N_DECIMAL_SETTINGVALUE);
+    report_util_float_setting(34,settings.laser_min, N_DECIMAL_SETTINGVALUE);
+  #endif
+  #ifdef USE_OUTPUT_PWM
+    report_util_float_setting(35,settings.volts_max, N_DECIMAL_SETTINGVALUE);
+    report_util_float_setting(36,settings.volts_min, N_DECIMAL_SETTINGVALUE);
+  #endif
   // Print axis settings
   uint8_t idx, set_idx;
   uint8_t val = AXIS_SETTINGS_START_VAL;
@@ -291,6 +302,11 @@ void report_grbl_settings() {
     }
     val += AXIS_SETTINGS_INCREMENT;
   }
+  report_grbl_settings_running = 0;
+}
+
+uint8_t is_report_grbl_settings_running() {
+  return report_grbl_settings_running;
 }
 
 
@@ -507,10 +523,15 @@ void report_build_info(char *line)
   #endif
   report_util_feedback_line_feed();
   printPgmString(PSTR("[OPT:")); // Generate compile-time build option list
-  serial_write('V'); // Variable spindle standard.
-  serial_write('N'); // Line number reporting standard.
-  serial_write('M'); // M7 mist coolant standard.
-  serial_write('G'); // Safety door support standard.
+  //--------------------------------------------------------------------
+  // ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*$# => Option letter
+  // ! !!! !!!  !!! !!! ! !!  !!         !!! => ! = Used
+  //--------------------------------------------------------------------
+  
+  serial_write('V'); // Variable spindle, standard.
+  serial_write('N'); // Line number reporting, standard.
+  serial_write('M'); // M7 mist coolant, standard.
+  serial_write('G'); // Safety door support, standard.
   #ifdef COREXY
     serial_write('C');
   #endif
@@ -525,6 +546,15 @@ void report_build_info(char *line)
   #endif
   #ifdef LIMITS_TWO_SWITCHES_ON_AXES
     serial_write('T');
+  #endif
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+    serial_write('S');
+  #endif
+  #ifdef USE_DIGITAL_INPUT
+    serial_write('D');
+  #endif
+  #ifdef USE_OUTPUT_PWM
+    serial_write('Q');
   #endif
   #ifdef ALLOW_FEED_OVERRIDE_DURING_PROBE_CYCLES
     serial_write('A');
@@ -555,9 +585,6 @@ void report_build_info(char *line)
   #endif
   #ifndef FORCE_BUFFER_SYNC_DURING_WCO_CHANGE // NOTE: Shown when disabled.
     serial_write('W');
-  #endif
-  #ifdef USE_DIGITAL_INPUT
-    serial_write('D');
   #endif
   // NOTE: Compiled values, like override increments/max/min values, may be added at some point later.
   serial_write(',');
@@ -727,11 +754,14 @@ void report_realtime_status()
   #endif
 
   #ifdef REPORT_FIELD_OVERRIDES
-    if (sys.report_ovr_counter > 0) { sys.report_ovr_counter--; }
-    else {
+    if (sys.report_ovr_counter > 0) {
+      sys.report_ovr_counter--;
+    } else {
       if (sys.state & (STATE_HOMING | STATE_CYCLE | STATE_HOLD | STATE_JOG | STATE_SAFETY_DOOR)) {
         sys.report_ovr_counter = (REPORT_OVR_REFRESH_BUSY_COUNT-1); // Reset counter for slow refresh
-      } else { sys.report_ovr_counter = (REPORT_OVR_REFRESH_IDLE_COUNT-1); }
+      } else {
+        sys.report_ovr_counter = (REPORT_OVR_REFRESH_IDLE_COUNT-1);
+      }
       printPgmString(PSTR("|Ov:"));
       print_uint8_base10(sys.f_override);
       serial_write(',');
@@ -754,7 +784,30 @@ void report_realtime_status()
           serial_write('D');
           printDgState(dg_state);
         }
+        #ifdef USE_OUTPUT_PWM
+        #endif
       }
+    }
+  #endif
+
+  #ifdef USE_OUTPUT_PWM
+    uint8_t ot_state = output_pwm_get_state();
+    if (ot_state) { // Analog output (PWM) in active
+      if (bit_istrue(settings.status_report_mask,BITFLAG_RT_STATUS_POSITION_TYPE)) {
+        // If reporting in machine position, print the PWM value of output
+        printPgmString(PSTR("|Qm:"));
+        print_uint16_base10(output_compute_pwm_value(sys.output_volts));
+      } else {
+        // If reporting in working position, print the output_volts value
+        printPgmString(PSTR("|Qw:"));
+        printFloat(sys.output_volts, N_DECIMAL_SETTINGVALUE);
+      }
+      /* pour debug calculs PWM
+      * serial_write(',');
+      * print_uint16_base10(output_compute_pwm_value(sys.output_volts));
+      * serial_write(',');
+      * printFloat(o_pwm_gradient(), N_DECIMAL_SETTINGVALUE);
+      */
     }
   #endif
 
@@ -798,9 +851,9 @@ void report_debug_string(char *line)
   report_util_line_feed();
 }
 
-// Report debug int value
-// This function accept the variable's name string as optional argument
-void report_debug_int(uint8_t val, ...)
+// Report debug int_8 and int_16 value
+// Those functions accept the variable's name string as optional argument
+void report_debug_int_8(uint8_t val, ...)
 {
   va_list args;
   char *valname;
@@ -818,4 +871,45 @@ void report_debug_int(uint8_t val, ...)
   printPgmString(PSTR(")}"));
   report_util_line_feed();
 }
+
+void report_debug_int_16(uint16_t val, ...)
+{
+  va_list args;
+  char *valname;
+  
+  va_start(args, val);
+  valname = va_arg(args, char *);
+  va_end(args);
+  
+  printPgmString(PSTR("{debug("));
+  if ( valname != NULL ) { 
+    printString(valname); 
+    printString(" = "); 
+  }
+  print_uint16_base10(val);
+  printPgmString(PSTR(")}"));
+  report_util_line_feed();
+}
+
+// Report debug float value
+// This function accept the variable's name string as optional argument
+void report_debug_float(float val, ...)
+{
+  va_list args;
+  char *valname;
+  
+  va_start(args, val);
+  valname = va_arg(args, char *);
+  va_end(args);
+  
+  printPgmString(PSTR("{debug("));
+  if ( valname != NULL ) { 
+    printString(valname); 
+    printString(" = "); 
+  }
+  printFloat(val, N_DECIMAL_SETTINGVALUE);
+  printPgmString(PSTR(")}"));
+  report_util_line_feed();
+}
+
 #endif // DEBUG

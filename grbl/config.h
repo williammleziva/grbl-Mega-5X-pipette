@@ -29,8 +29,11 @@
 
 #ifndef config_h
 #define config_h
+
 #include "grbl.h" // For Arduino IDE compatibility.
 
+// Serial baud rate
+#define BAUD_RATE 115200
 
 // Define CPU pin map and default settings.
 // NOTE: OEMs can avoid the need to maintain/update the defaults.h and cpu_map.h files and use only
@@ -38,10 +41,6 @@
 // If doing so, simply comment out these two defines and see instructions below.
 #define DEFAULTS_GENERIC
 #define CPU_MAP_2560_RAMPS_BOARD
-
-// Serial baud rate
-// #define BAUD_RATE 230400
-#define BAUD_RATE 115200
 
 //----------------------------------------------------------------------
 // Axis definitions :
@@ -52,8 +51,10 @@
 // if you forget the $RST=* command after change, Grbl may have 
 // unpredictable behavior!
 //----------------------------------------------------------------------
+
 #define N_AXIS 5        // Number of axes (3 to 6)
 #define N_AXIS_LINEAR 3 // Number of linears axis, must be <= N_AXIS
+
 // Axis indexing and names
 #define AXIS_1 0        // Axis indexing value. Must start with 0 and be continuous.
 #define AXIS_1_NAME 'X' // Axis names must be in X, Y, Z, A, B, C, U, V, W, D, E & H.
@@ -79,21 +80,6 @@
 #if N_AXIS > 6
   #error "N_AXIS must be <= 6. N_AXIS > 6 is not implemented."
 #endif
-//----------------------------------------------------------------------
-
-// Chose the spindle pin output :
-// SPINDLE_PWM_ON_D8  => 0-12v 16 bits PWM on RAMPS D8
-// SPINDLE_PWM_ON_D6  => 0-5v 8bits PWM on RAMPS Servo 2 signal (Mega 2560 D6)
-// Uncomment the line which correspond to your hardware
-#define SPINDLE_PWM_ON_D8
-//#define SPINDLE_PWM_ON_D6
-
-// PWM signal inversion:
-// In case of particular electronics, it may be necessary to invert the values
-// of the PWM signal of the spindle. For example, if the minimum spindle 
-// rpm is 1 and maximum is 1000, M3S250 will output 75% instead of 25% and
-// M3S750 will output 25% instead of 75%. Disabled by default
-//#define INVERT_PWM_VALUES
 
 // Renaming axis doesn't change their number. By default, the status report give axis values in
 // the order of their number. Some graphical interface are not able to affect axis values reported
@@ -120,6 +106,76 @@
     #error You must define SORT_REPORT_BY_AXIS_NAME to use REPORT_VALUE_FOR_AXIS_NAME_ONCE
   #endif
 #endif
+
+//----------------------------------------------------------------------
+// End of axis definitions :
+//----------------------------------------------------------------------
+
+
+//----------------------------------------------------------------------
+// Spindle, laser and other PWM output
+//----------------------------------------------------------------------
+// Chose the spindle pin output :
+// SPINDLE_PWM_ON_D8  => 0-12v 16 bits PWM on RAMPS D8 (default)
+// SPINDLE_PWM_ON_D9  => 0-12v 8 bits PWM on RAMPS D9
+// SPINDLE_PWM_ON_D6  => 0-5v 8bits PWM on RAMPS Servo 2 signal (Mega 2560 D6)
+// Uncomment the line which correspond to your hardware
+#define SPINDLE_PWM_ON_D8
+//#define SPINDLE_PWM_ON_D6
+//#define SPINDLE_PWM_ON_D9
+
+// Spindle PWM signal inversion:
+// In case of particular electronics, it may be necessary to invert the values
+// of the PWM signal of the spindle. For example, if the minimum spindle 
+// rpm is 1 and maximum is 1000, M3S250 will output 75% instead of 25% and
+// M3S750 will output 25% instead of 75%. Disabled by default
+//#define INVERT_SPINDLE_PWM_VALUES
+
+// Use different spindle output pin in laser mode:
+// Spindle or laser tools do not have the same hardware specifications.
+// When using both spindle and laser on the same machine it will be useful
+// to have spindle and laser on diffrents pins which can deliver the
+// differents outputs nedded.
+//----------------------------------------------------------------------
+// ! IMPORTANT: When changing the SEPARATE_SPINDLE_LASER_PIN compil option,
+// don't forget to issue the reset factory defaults Grbl command: $RST=*
+// if you forget the $RST=* command after change, Grbl may have 
+// unpredictable behavior!
+//----------------------------------------------------------------------
+// Uncomment the next line to enable this functionality (default disabled):
+//#define SEPARATE_SPINDLE_LASER_PIN
+
+#ifdef SEPARATE_SPINDLE_LASER_PIN
+  // Laser PWM can be on D6 (default) or on D8 or D9. 
+  #define LASER_PWM_ON_D6
+  //#define LASER_PWM_ON_D8
+  //#define LASER_PWM_ON_D9
+#endif
+
+// Use output PWM drived by GCode command M67(Analog Output,Synchronized) 
+// or GCode command M68(Analog Output, Immediate).
+//----------------------------------------------------------------------
+// ! IMPORTANT: When changing the USE_OUTPUT_PWM compil option,
+// don't forget to issue the reset factory defaults Grbl command: $RST=*
+// if you forget the $RST=* command after change, Grbl may have 
+// unpredictable behavior!
+//----------------------------------------------------------------------
+// Uncomment the next line to enable the use of M67/M68 PWM output (Disabled by default).
+//#define USE_OUTPUT_PWM
+
+#ifdef USE_OUTPUT_PWM
+  // Optional PWM can be on D9 (default) or on D8 or D6. 
+  // Warning ! Optional can't use the same timer than the spindle or the laser pin
+  // For more information about this, see the comment of the relevant section in cpu_map.h 
+  #define OUTPUT_PWM_ON_D9
+  //#define OUTPUT_PWM_ON_D8
+  //#define OUTPUT_PWM_ON_D6
+#endif
+
+//----------------------------------------------------------------------
+// End of spindle and other PWM output
+//----------------------------------------------------------------------
+
 
 // Define realtime command special characters. These characters are 'picked-off' directly from the
 // serial read data stream and are not passed to the grbl line execution parser. Select characters
@@ -691,6 +747,13 @@
 // 'fit_nonlinear_spindle.py' script in the /doc/script folder of the repo. See file comments
 // on how to gather spindle data and run the script to generate a solution.
 // #define ENABLE_PIECEWISE_LINEAR_SPINDLE  // Default disabled. Uncomment to enable.
+// ENABLE_PIECEWISE_LINEAR_SPINDLE is not compatible with the SEPARATE_SPINDLE_LASER_PIN option
+#ifdef ENABLE_PIECEWISE_LINEAR_SPINDLE
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+    #error ENABLE_PIECEWISE_LINEAR_SPINDLE compile option is not compatible with the SEPARATE_SPINDLE_LASER_PIN option
+  #endif
+#endif
+
 
 // N_PIECES, RPM_MAX, RPM_MIN, RPM_POINTxx, and RPM_LINE_XX constants are all set and given by
 // the 'fit_nonlinear_spindle.py' script solution. Used only when ENABLE_PIECEWISE_LINEAR_SPINDLE
