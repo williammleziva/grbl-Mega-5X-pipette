@@ -301,11 +301,14 @@
 
   // Spindle PWM configuration :
   // list of timers in Arduino Mega 2560
-  // TIMER0 (controls pin 13, 4);   => Timer0 is used by stepper.c
-  // TIMER1 (controls pin 12, 11);  => Timer1 is used by stepper.c
-  // TIMER2 (controls pin 10, 9);   => Timer2 is used by analog output or spindle PWM on D9
-  // TIMER3 (controls pin 5, 3, 2); => Timer3 is used by sleep.c
-  // TIMER4 (controls pin 8, 7, 6); => Timer4 is used by analog output or spindle PWM on D8 or D6
+  // TIMER0 (controls pin D13,  D4);      => Timer0 is used by stepper.c
+  // TIMER1 (controls pin D12, D11);      => Timer1 is used by stepper.c
+  // TIMER2 (controls pin D10,  D9);      => Timer2 is used by analog output or spindle PWM on D9
+  // TIMER3 (controls pin  D5,  D3,  D2); => Timer3 is used by sleep.c
+  // TIMER4 (controls pin  D8,  D7,  D6); => Timer4 is used by analog output or spindle PWM on D8 or D6
+  // TIMER5 (controls pin D46, D45, D44); => Timer5 is unused by grbl-Mega-5X. It's possible to add 
+  //                                         PWM capability to ports D44 (RAMPS AUX-2), D45 (RAMPS AUX-4). 
+  //                                         D46 is not available for PWM because it's used by Z step.
   // Arduino pin number and the corresponding register for controlling the duty cycle :
   // Pin  Register
   //   2  OCR3B
@@ -410,11 +413,100 @@
   #endif
 
 
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+
+    #if defined (LASER_PWM_ON_D6)
+
+      // Set Timer up to use TIMER4C which is attached to Digital Pin 6 - Ramps Servo 2
+      #define LASER_PWM_MAX_VALUE     255.0 // Translates to about 1.9 kHz PWM frequency at 1/8 prescaler
+      #ifndef LASER_PWM_MIN_VALUE
+        #define LASER_PWM_MIN_VALUE   1   // Must be greater than zero.
+      #endif
+      #define LASER_PWM_OFF_VALUE     0
+      #define LASER_PWM_RANGE         (LASER_PWM_MAX_VALUE-LASER_PWM_MIN_VALUE)
+
+      //Control Digital Pin 6 which is Servo 2 signal pin on Ramps 1.4 board
+      #define LASER_TCCRA_REGISTER    TCCR4A
+      #define LASER_TCCRB_REGISTER    TCCR4B
+      #define LASER_OCR_REGISTER      OCR4A
+      #define LASER_COMB_BIT          COM4A1
+
+      // 1/8 Prescaler, 8-bit Fast PWM mode
+      #define LASER_TCCRA_INIT_MASK (1<<WGM41)
+      #define LASER_TCCRB_INIT_MASK ((1<<WGM42) | (1<<WGM43) | (1<<CS41))
+      #define LASER_OCRA_REGISTER   ICR4 // 8-bit Fast PWM mode requires top reset value stored here.
+      #define LASER_OCRA_TOP_VALUE  0xFF // PWM counter reset value. Should be the same as PWM_MAX_VALUE in hex.
+
+      // Define spindle LASER pins.
+      #define LASER_PWM_DDR   DDRH
+      #define LASER_PWM_PORT  PORTH
+      #define LASER_PWM_BIT   3 // MEGA2560 Digital Pin 6
+
+    #elif defined (LASER_PWM_ON_D8)
+
+      // Set Timer up to use TIMER4B which is attached to Digital Pin 8 - Ramps 1.4 12v LASER with heat sink
+      #define LASER_PWM_MAX_VALUE     1024.0 // Translates to about 1.9 kHz PWM frequency at 1/8 prescaler
+      #ifndef LASER_PWM_MIN_VALUE
+        #define LASER_PWM_MIN_VALUE   1   // Must be greater than zero.
+      #endif
+      #define LASER_PWM_OFF_VALUE     0
+      #define LASER_PWM_RANGE         (LASER_PWM_MAX_VALUE-LASER_PWM_MIN_VALUE)
+
+      //Control Digital Pin 8
+      #define LASER_TCCRA_REGISTER    TCCR4A
+      #define LASER_TCCRB_REGISTER    TCCR4B
+      #define LASER_OCR_REGISTER      OCR4C
+      #define LASER_COMB_BIT          COM4C1
+
+      // 1/8 Prescaler, 16-bit Fast PWM mode
+      #define LASER_TCCRA_INIT_MASK ((1<<WGM40) | (1<<WGM41))
+      #define LASER_TCCRB_INIT_MASK ((1<<WGM42) | (1<<WGM43) | (1<<CS41))
+      #define LASER_OCRA_REGISTER   OCR4A // 16-bit Fast PWM mode requires top reset value stored here.
+      #define LASER_OCRA_TOP_VALUE  0x400 // PWM counter reset value. Should be the same as PWM_MAX_VALUE in hex.
+
+      // Define spindle LASER pins.
+      #define LASER_PWM_DDR   DDRH
+      #define LASER_PWM_PORT  PORTH
+      #define LASER_PWM_BIT   5 // MEGA2560 Digital Pin 8
+
+    #elif defined (LASER_PWM_ON_D9)
+
+      // Set Timer up to use TIMER2B which is attached to Digital Pin 9 - Ramps D9
+      #define LASER_PWM_MAX_VALUE     255.0 // Translates to about 1.9 kHz PWM frequency at 1/8 prescaler
+      #ifndef LASER_PWM_MIN_VALUE
+        #define LASER_PWM_MIN_VALUE   1   // Must be greater than zero.
+      #endif
+      #define LASER_PWM_OFF_VALUE     0
+      #define LASER_PWM_RANGE         (LASER_PWM_MAX_VALUE-LASER_PWM_MIN_VALUE)
+
+      //Control Digital Pin 9 
+      #define LASER_TCCRA_REGISTER    TCCR2A
+      #define LASER_TCCRB_REGISTER    TCCR2B
+      #define LASER_OCR_REGISTER      OCR2B
+      #define LASER_COMB_BIT          COM2B1
+
+      // 1/8 Prescaler, 8-bit Fast PWM mode
+      #define LASER_TCCRA_INIT_MASK ((1<<WGM20) | (1<<WGM21))
+      #define LASER_TCCRB_INIT_MASK ((1<<WGM22) | (1<<CS22))
+      #define LASER_OCRA_REGISTER   OCR2A // 8-bit Fast PWM mode requires top reset value stored here.
+      #define LASER_OCRA_TOP_VALUE  0xFF  // PWM counter reset value. Should be the same as PWM_MAX_VALUE in hex.
+
+      // Define spindle LASER pins.
+      #define LASER_PWM_DDR   DDRH
+      #define LASER_PWM_PORT  PORTH
+      #define LASER_PWM_BIT   6 // MEGA2560 Digital Pin 9
+
+    #else
+      #error "LASER_PWM_ON_D8 or LASER_PWM_ON_D6 or LASER_PWM_ON_D9 must be defined in config.h with the SEPARATE_SPINDLE_LASER_PIN option!"
+    #endif
+
+  #endif // SEPARATE_SPINDLE_LASER_PIN
+
   #ifdef USE_OUTPUT_PWM
 
     #if defined (OUTPUT_PWM_ON_D9)
 
-      // Error if both spindle and analog output are defined on the same output
+      // Error if both spindle and analog output are defined on the same pin
       #ifdef SPINDLE_PWM_ON_D9
         #error "Spindle is already defined on D9, you cant use the same D9 pin for analog output!"
       #endif
@@ -445,10 +537,11 @@
 
     #elif defined (OUTPUT_PWM_ON_D8)
 
-      // Error if both spindle and analog output are defined on the same output
+      // Error if both spindle and analog output are defined on the same pin
       #ifdef SPINDLE_PWM_ON_D8
         #error "Spindle is already defined on D8, you cant use the same D8 pin for analog output!"
       #endif
+      // Error when analog output and spindle use the same timer
       #ifdef SPINDLE_PWM_ON_D6
         #error "Spindle is defined on D6 which use the same timer than D8, you cant use D8 pin for analog output!"
       #endif
@@ -479,10 +572,11 @@
 
     #elif defined (OUTPUT_PWM_ON_D6)
 
-      // Error if both spindle and analog output are defined on the same output
+      // Error if both spindle and analog output are defined on the same pin
       #ifdef SPINDLE_PWM_ON_D6
         #error "Spindle is already defined on D6, you cant use the same D6 pin for analog output!"
       #endif
+      // Error when analog output and spindle use the same timer
       #ifdef SPINDLE_PWM_ON_D8
         #error "Spindle is defined on D8 which use the same timer than D6, you cant use D6 pin for analog output!"
       #endif
@@ -514,7 +608,8 @@
     #else
       #error "OUTPUT_PWM_ON_D9 or OUTPUT_PWM_ON_D8 or OUTPUT_PWM_ON_D6 must be defined in config.h with the USE_OUTPUT_PWM option!"
     #endif
-  #endif
+
+  #endif // USE_OUTPUT_PWM
 
 #endif // CPU_MAP_2560_RAMPS_BOARD
 

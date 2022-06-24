@@ -44,8 +44,4 @@ float o_pwm_gradient();
   void output_pwm_sync(uint8_t state, float volts);
 #endif // USE_OUTPUT_PWM
 
-#ifdef USE_ANALOG_INPUTS
-  float readAnalog();
-#endif // USE_ANALOG_INPUTS
-
 #endif

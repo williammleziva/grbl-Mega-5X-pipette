@@ -295,8 +295,8 @@ uint8_t gc_execute_line(char *line)
             gc_block.non_modal_command = int_value;
             break;
           #ifdef USE_OUTPUT_PWM
-            case 162: case 163: case 164: case 165:
-              // M162, M163, M164, M165
+            case 67: case 68:
+              // M67, M68
               dword_bit = MODAL_GROUP_M11;
               gc_block.non_modal_command = int_value;
               break;
@@ -371,9 +371,7 @@ uint8_t gc_execute_line(char *line)
             break;
           case 'L': dword_bit = DWORD_L; gc_block.values.l = int_value; break;
           case 'N': dword_bit = DWORD_N; gc_block.values.n = int_value;break;
-          #ifdef USE_OUTPUT_PWM
-            case 'O': dword_bit = DWORD_O; gc_block.values.o = value; break;
-          #endif
+          // case 'O': // Not supported
           case 'P': dword_bit = DWORD_P;
             // NOTE: For certain commands, P value must be an integer, This is the case of Digital output M26-M65
             if ((gc_block.non_modal_command >= NON_MODAL_DIGITAL_SYNC_ON) && (gc_block.non_modal_command <= NON_MODAL_DIGITAL_IMMEDIATE_OFF)) {
@@ -382,7 +380,9 @@ uint8_t gc_execute_line(char *line)
               gc_block.values.p = value;
             }
             break;
-          // case 'Q': // Not supported
+          #ifdef USE_OUTPUT_PWM
+            case 'Q': dword_bit = DWORD_Q; gc_block.values.q = value; break;
+          #endif
           case 'R': dword_bit = DWORD_R; gc_block.values.r = value; break;
           case 'S': dword_bit = DWORD_S; gc_block.values.s = value; break;
           case 'T': dword_bit = DWORD_T;
@@ -438,7 +438,7 @@ uint8_t gc_execute_line(char *line)
         // Check for invalid negative values for words F, N, O, P, T, and S.
         // NOTE: Negative value check is done here simply for code-efficiency.
         #ifdef USE_OUTPUT_PWM
-        if ( dwbit(dword_bit) & (dwbit(DWORD_F)|dwbit(DWORD_N)|dwbit(DWORD_O)|dwbit(DWORD_P)|dwbit(DWORD_T)|dwbit(DWORD_S)) ) {
+        if ( dwbit(dword_bit) & (dwbit(DWORD_F)|dwbit(DWORD_N)|dwbit(DWORD_Q)|dwbit(DWORD_P)|dwbit(DWORD_T)|dwbit(DWORD_S)) ) {
         #else
         if ( dwbit(dword_bit) & (dwbit(DWORD_F)|dwbit(DWORD_N)|dwbit(DWORD_P)|dwbit(DWORD_T)|dwbit(DWORD_S)) ) {
         #endif
@@ -544,9 +544,11 @@ uint8_t gc_execute_line(char *line)
   if (bit_isfalse(value_dwords,dwbit(DWORD_S))) { gc_block.values.s = gc_state.spindle_speed; }
   // bit_false(value_dwords,dwbit(DWORD_S)); // NOTE: Single-meaning value word. Set at end of error-checking.
 
-  // [4.bis Set output PWM value]: O is negative (done.)
-  if (bit_isfalse(value_dwords,dwbit(DWORD_O))) { gc_block.values.o = gc_state.output_volts; }
-  // bit_false(value_dwords,dwbit(DWORD_O)); // NOTE: Single-meaning value word. Set at end of error-checking.
+  #ifdef USE_OUTPUT_PWM
+    // [4.bis Set output PWM value]: Q value missing, Q is negative (done.)
+    if (bit_isfalse(value_dwords,dwbit(DWORD_Q))) { FAIL(STATUS_GCODE_VALUE_WORD_MISSING); } // [Q word missing]
+    // bit_false(value_dwords,dwbit(DWORD_Q)); // NOTE: Single-meaning value word. Set at end of error-checking.
+  #endif
 
   // [5. Select tool ]: NOT SUPPORTED. Only tracks value. T is negative (done.) Not an integer. Greater than max tool value.
   // bit_false(value_dwords,dwbit(DWORD_T)); // NOTE: Single-meaning value word. Set at end of error-checking.
@@ -1236,7 +1238,7 @@ uint8_t gc_execute_line(char *line)
     bit_false(value_dwords,(dwbit(DWORD_N)|dwbit(DWORD_F)));
   } else {
     #ifdef USE_OUTPUT_PWM
-    bit_false(value_dwords,(dwbit(DWORD_N)|dwbit(DWORD_F)|dwbit(DWORD_O)|dwbit(DWORD_S)|dwbit(DWORD_T))); // Remove single-meaning value words.
+    bit_false(value_dwords,(dwbit(DWORD_N)|dwbit(DWORD_F)|dwbit(DWORD_Q)|dwbit(DWORD_S)|dwbit(DWORD_T))); // Remove single-meaning value words.
     #else
     bit_false(value_dwords,(dwbit(DWORD_N)|dwbit(DWORD_F)|dwbit(DWORD_S)|dwbit(DWORD_T))); // Remove single-meaning value words.
     #endif
@@ -1567,37 +1569,40 @@ uint8_t gc_execute_line(char *line)
 
   #ifdef USE_OUTPUT_PWM
     // [23. Output PWM ]:
-    if ((gc_state.output_volts != gc_block.values.o) || ((gc_block.non_modal_command >= NON_MODAL_ANALOG_SYNC_ON) && (gc_block.non_modal_command <= NON_MODAL_ANALOG_IMMEDIATE_OFF))) {
+    if ((gc_state.output_volts != gc_block.values.q) || ((gc_block.non_modal_command >= NON_MODAL_ANALOG_OUTPUT_SYNC) && (gc_block.non_modal_command <= NON_MODAL_ANALOG_OUTPUT_IMMEDIATE))) {
       switch(gc_block.non_modal_command) {
-        case NON_MODAL_ANALOG_SYNC_ON:       // M162
-          output_pwm_sync(OUTPUT_PWM_STATE_ON, gc_block.values.o);
+        case NON_MODAL_ANALOG_OUTPUT_SYNC:       // M67
+          if (gc_block.values.q != 0.0) {
+            output_pwm_sync(OUTPUT_PWM_STATE_ON, gc_block.values.q);
+          } else {
+            output_pwm_sync(OUTPUT_PWM_STATE_OFF, 0.0);
+          }
           gc_state.output_last_command = gc_block.non_modal_command;
           break;
-        case NON_MODAL_ANALOG_SYNC_OFF:      // M163
-          output_pwm_sync(OUTPUT_PWM_STATE_OFF, 0.0);
-          gc_state.output_last_command = gc_block.non_modal_command;
-          break;
-        case NON_MODAL_ANALOG_IMMEDIATE_ON:  // M164
-          output_pwm_set_state(OUTPUT_PWM_STATE_ON, gc_block.values.o);
-          gc_state.output_last_command = gc_block.non_modal_command;
-          break;
-        case NON_MODAL_ANALOG_IMMEDIATE_OFF: // M165
-          output_pwm_set_state(OUTPUT_PWM_STATE_OFF, 0.0);
+        case NON_MODAL_ANALOG_OUTPUT_IMMEDIATE:  // M68
+          if (gc_block.values.q != 0.0) {
+            output_pwm_set_state(OUTPUT_PWM_STATE_ON, gc_block.values.q);
+          } else {
+            output_pwm_set_state(OUTPUT_PWM_STATE_OFF, 0.0);
+          }
           gc_state.output_last_command = gc_block.non_modal_command;
           break;
         default:
-          // Changement de la valeur de sortie en dehors d'une commande M162-M165
+          // Changement de la valeur de sortie en dehors d'une commande M67/M68
           // En fonction de la dernière commande stockée dans gc_state.output_last,
-          // on change immediatement ou synchronisé si NON_MODAL_ANALOG_SYNC_ON ou NON_MODAL_ANALOG_IMMEDIATE_ON
-          // ou on laissera off si NON_MODAL_ANALOG_SYNC_OFF ou NON_MODAL_ANALOG_IMMEDIATE_OFF.
-          if (gc_state.output_last_command == NON_MODAL_ANALOG_SYNC_ON) {
-            output_pwm_sync(OUTPUT_PWM_STATE_ON, gc_block.values.o);
-          } else if (gc_state.output_last_command == NON_MODAL_ANALOG_IMMEDIATE_ON) {
-            output_pwm_set_state(OUTPUT_PWM_STATE_ON, gc_block.values.o);
+          // on change immediatement ou synchronisé si respectivement NON_MODAL_ANALOG_OUTPUT_SYNC
+          // ou NON_MODAL_ANALOG_OUTPUT_IMMEDIATE.
+          // On laissera off si OUTPUT_PWM_STATE_OFF en cours (dernière action avec valeur 0.0).
+          if (gc_state.output_volts != 0.0) {
+            if (gc_state.output_last_command == NON_MODAL_ANALOG_OUTPUT_SYNC) {
+              output_pwm_sync(OUTPUT_PWM_STATE_ON, gc_block.values.q);
+            } else if (gc_state.output_last_command == NON_MODAL_ANALOG_OUTPUT_IMMEDIATE) {
+              output_pwm_set_state(OUTPUT_PWM_STATE_ON, gc_block.values.q);
+            }
           }
           break;
       }
-      gc_state.output_volts = gc_block.values.o; // Update output volt state gc_state.spindle .
+      gc_state.output_volts = gc_block.values.q; // Update output volt state gc_state.output_volts .
     }
   #endif
 

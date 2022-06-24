@@ -149,13 +149,17 @@
     #endif
     #define DEFAULT_SPINDLE_RPM_MAX 12000 // rpm
     #define DEFAULT_SPINDLE_RPM_MIN 550.0 // rpm
+    #ifdef SEPARATE_SPINDLE_LASER_PIN
+      #define DEFAULT_LASER_MAX 100
+      #define DEFAULT_LASER_MIN 1
+    #endif
     #ifdef USE_OUTPUT_PWM
       #if defined(OUTPUT_PWM_ON_D9) || defined(OUTPUT_PWM_ON_D8)
-        #define DEFAULT_OUTPUT_PWM_MAX 12.0  // volts
-        #define DEFAULT_OUTPUT_PWM_MIN  1.0  // volts
-      #else // OUTPUT_PWM_ON_D6
-        #define DEFAULT_OUTPUT_PWM_MAX  5.0  // volts
-        #define DEFAULT_OUTPUT_PWM_MIN  0.04 // volts
+        #define DEFAULT_OUTPUT_MAX 12.0  // volts
+        #define DEFAULT_OUTPUT_MIN  1.4  // volts
+      #else // (OUTPUT_PWM_ON_D6)
+        #define DEFAULT_OUTPUT_MAX  5.0  // volts
+        #define DEFAULT_OUTPUT_MIN  0.04 // volts
       #endif
     #endif
     #define DEFAULT_STEP_PULSE_MICROSECONDS 10

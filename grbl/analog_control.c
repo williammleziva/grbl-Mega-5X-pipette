@@ -2,13 +2,6 @@
   analog_control.c - Read analog input
   Part of Grbl
 
-    Grbl $ command:
-    $A : Read all analog inputs
-
-    User defined M codes :
-    M167 P<0/1>: Read analog input, Synchronized
-    M168 P<0/1>: Read analog input, Immediate
-
   Copyright (c) 2017-2022 Gauthier Briere
 
   Grbl is free software: you can redistribute it and/or modify
@@ -28,10 +21,10 @@
 #include "grbl.h"
 
 
+#ifdef USE_OUTPUT_PWM
+
 static float output_pwm_gradient; // Precalulated value to speed up volts to PWM conversions.
 
-
-#ifdef USE_OUTPUT_PWM
 float o_pwm_gradient()
 {
   return output_pwm_gradient;
@@ -129,29 +122,3 @@ void output_pwm_sync(uint8_t state, float volts)
 
 #endif // USE_OUTPUT_PWM
 
-
-#ifdef USE_ANALOG_INPUTS
-
-float readAnalog()
-{
-  float value = 0.0;
-  // Voltage reference for ADC. The default Arduino's analog reference 
-  // of 5 volts on 5V Arduino boards.
-  uint8_t adcVRef = 1 << 6;
-  // A13 : pin = 13 --- A14 pin = 14
-  uint8_t pin = 13;
-  
-  // ADC Prescaler = 32
-  sbi(ADCSRA, ADPS2);
-  cbi(ADCSRA, ADPS1);
-  sbi(ADCSRA, ADPS0);
-
-  // Selection de la pin
-/////  ADMUX = 
-  // On lance la lecture analogique
-  sbi(ADCSRA, ADSC);
-
-  return value;
-}
-
-#endif // USE_ANALOG_INPUTS

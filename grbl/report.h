@@ -102,6 +102,7 @@ void report_grbl_help();
 
 // Prints Grbl global settings
 void report_grbl_settings();
+uint8_t is_report_grbl_settings_running();
 
 // Prints an echo of the pre-parsed line received right before execution.
 void report_echo_line_received(char *line);
@@ -131,7 +132,8 @@ void printDgState(uint8_t dg_state);
 
 #ifdef DEBUG
   void report_debug_string(char *line);
-  void report_debug_int(uint8_t val, ...);
+  void report_debug_int_8(uint8_t val, ...);
+  void report_debug_int_16(uint16_t val, ...);
 #endif
 
 #endif

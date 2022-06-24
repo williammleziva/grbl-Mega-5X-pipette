@@ -27,7 +27,21 @@ static float spindle_pwm_gradient; // Precalulated value to speed up rpm to PWM 
 
 
 void spindle_init()
-{    
+{
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+    if (settings.flags & BITFLAG_LASER_MODE) {
+      // In laser mode, spindle routines use laser pin output
+      // Force PWM output zero to avoid PWM output flash on laser output
+      LASER_TCCRA_REGISTER &= ~(1<<LASER_COMB_BIT); // Disable PWM. Output voltage is zero.
+      // Configure variable spindle PWM and enable pin, if required.
+      LASER_PWM_DDR |= (1<<LASER_PWM_BIT); // Configure as PWM output pin.
+      LASER_TCCRA_REGISTER = LASER_TCCRA_INIT_MASK; // Configure PWM output compare timer
+      LASER_TCCRB_REGISTER = LASER_TCCRB_INIT_MASK;
+      LASER_OCRA_REGISTER = LASER_OCRA_TOP_VALUE; // Set the top value for 16-bit fast PWM mode
+      // Calculate gradient laser value to PWM to speed up conversions.
+      spindle_pwm_gradient = LASER_PWM_RANGE/(settings.laser_max - settings.laser_min);
+    } else {
+  #endif
   // Force PWM output zero to avoid PWM output flash on laser output
   SPINDLE_TCCRA_REGISTER &= ~(1<<SPINDLE_COMB_BIT); // Disable PWM. Output voltage is zero.
   // Configure variable spindle PWM and enable pin, if required.
@@ -37,22 +51,42 @@ void spindle_init()
   SPINDLE_OCRA_REGISTER = SPINDLE_OCRA_TOP_VALUE; // Set the top value for 16-bit fast PWM mode
   SPINDLE_ENABLE_DDR |= (1<<SPINDLE_ENABLE_BIT); // Configure as output pin.
   SPINDLE_DIRECTION_DDR |= (1<<SPINDLE_DIRECTION_BIT); // Configure as output pin.
-
-  spindle_pwm_gradient = SPINDLE_PWM_RANGE/(settings.rpm_max-settings.rpm_min);
+  // Calculate gradient rpm to PWM to speed up conversions.
+  spindle_pwm_gradient = SPINDLE_PWM_RANGE/(settings.rpm_max - settings.rpm_min);
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+    }
+  #endif
   spindle_stop();
 }
 
 
 uint8_t spindle_get_state()
 {
-  #ifdef INVERT_SPINDLE_ENABLE_PIN
-    if (bit_isfalse(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT)) && (SPINDLE_TCCRA_REGISTER & (1<<SPINDLE_COMB_BIT))) {
-  #else
-    if (bit_istrue(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT)) && (SPINDLE_TCCRA_REGISTER & (1<<SPINDLE_COMB_BIT))) {
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+    if (settings.flags & BITFLAG_LASER_MODE) {
+      if (LASER_TCCRA_REGISTER & (1<<LASER_COMB_BIT)) {
+        if (SPINDLE_DIRECTION_PORT & (1<<SPINDLE_DIRECTION_BIT)) {
+          return(SPINDLE_STATE_CCW);
+        } else {
+          return(SPINDLE_STATE_CW);
+        }
+      }
+    } else {
   #endif
-    if (SPINDLE_DIRECTION_PORT & (1<<SPINDLE_DIRECTION_BIT)) { return(SPINDLE_STATE_CCW); }
-    else { return(SPINDLE_STATE_CW); }
-  }
+      #ifdef INVERT_SPINDLE_ENABLE_PIN
+        if (bit_isfalse(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT)) && (SPINDLE_TCCRA_REGISTER & (1<<SPINDLE_COMB_BIT))) {
+      #else
+        if (bit_istrue(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT)) && (SPINDLE_TCCRA_REGISTER & (1<<SPINDLE_COMB_BIT))) {
+      #endif
+        if (SPINDLE_DIRECTION_PORT & (1<<SPINDLE_DIRECTION_BIT)) {
+          return(SPINDLE_STATE_CCW);
+        } else {
+          return(SPINDLE_STATE_CW);
+        }
+      }
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+    }
+  #endif
 	return(SPINDLE_STATE_DISABLE);
 }
 
@@ -62,11 +96,19 @@ uint8_t spindle_get_state()
 // Called by spindle_init(), spindle_set_speed(), spindle_set_state(), and mc_reset().
 void spindle_stop()
 {
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+    if (settings.flags & BITFLAG_LASER_MODE) {
+      LASER_TCCRA_REGISTER &= ~(1<<LASER_COMB_BIT); // Disable PWM. Output voltage is zero.
+    } else {
+  #endif
   SPINDLE_TCCRA_REGISTER &= ~(1<<SPINDLE_COMB_BIT); // Disable PWM. Output voltage is zero.
   #ifdef INVERT_SPINDLE_ENABLE_PIN
     SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);  // Set pin to high
   #else
     SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT); // Set pin to low
+  #endif
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+    }
   #endif
 }
 
@@ -75,6 +117,24 @@ void spindle_stop()
 // and stepper ISR. Keep routine small and efficient.
 void spindle_set_speed(uint16_t pwm_value)
 {
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+    if (settings.flags & BITFLAG_LASER_MODE) {
+      LASER_OCR_REGISTER = pwm_value; // Set PWM output level.
+      #ifdef SPINDLE_ENABLE_OFF_WITH_ZERO_SPEED
+        if (pwm_value == LASER_PWM_OFF_VALUE) {
+          spindle_stop();
+        } else {
+          LASER_TCCRA_REGISTER |= (1<<LASER_COMB_BIT); // Ensure PWM output is enabled.
+        }
+      #else
+        if (pwm_value == LASER_PWM_OFF_VALUE) {
+          LASER_TCCRA_REGISTER &= ~(1<<LASER_COMB_BIT); // Disable PWM. Output voltage is zero.
+        } else {
+          LASER_TCCRA_REGISTER |= (1<<LASER_COMB_BIT); // Ensure PWM output is enabled.
+        }
+      #endif
+    } else {
+  #endif
   SPINDLE_OCR_REGISTER = pwm_value; // Set PWM output level.
   #ifdef SPINDLE_ENABLE_OFF_WITH_ZERO_SPEED
     if (pwm_value == SPINDLE_PWM_OFF_VALUE) {
@@ -92,6 +152,9 @@ void spindle_set_speed(uint16_t pwm_value)
       SPINDLE_TCCRA_REGISTER &= ~(1<<SPINDLE_COMB_BIT); // Disable PWM. Output voltage is zero.
     } else {
       SPINDLE_TCCRA_REGISTER |= (1<<SPINDLE_COMB_BIT); // Ensure PWM output is enabled.
+    }
+  #endif
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
     }
   #endif
 }
@@ -147,6 +210,29 @@ void spindle_set_speed(uint16_t pwm_value)
   {
     uint16_t pwm_value;
     rpm *= (0.010*sys.spindle_speed_ovr); // Scale by spindle speed override value.
+    #ifdef SEPARATE_SPINDLE_LASER_PIN
+      if (settings.flags & BITFLAG_LASER_MODE) {
+        // Calculate PWM register value based on laser max/min settings and programmed rpm.
+        if ((settings.laser_min >= settings.laser_max) || (rpm >= settings.laser_max)) {
+          // No PWM range possible. Set simple on/off pin state.
+          sys.spindle_speed = settings.laser_max;
+          pwm_value = LASER_PWM_MAX_VALUE;
+        } else if (rpm <= settings.laser_min) {
+          if (rpm == 0.0) { // S0 disables laser
+          sys.spindle_speed = 0.0;
+          pwm_value = LASER_PWM_OFF_VALUE;
+          } else { // Set minimum PWM output
+          sys.spindle_speed = settings.laser_min;
+          pwm_value = LASER_PWM_MIN_VALUE;
+          }
+        } else { 
+          // Compute intermediate PWM value with linear laser power model.
+          // NOTE: A nonlinear model could be installed here, if required, but keep it VERY light-weight.
+          sys.spindle_speed = rpm;
+          pwm_value = floor((rpm - settings.laser_min) * spindle_pwm_gradient) + LASER_PWM_MIN_VALUE;
+        }
+      } else {
+    #endif
     // Calculate PWM register value based on rpm max/min settings and programmed rpm.
     if ((settings.rpm_min >= settings.rpm_max) || (rpm >= settings.rpm_max)) {
       // No PWM range possible. Set simple on/off spindle control pin state.
@@ -166,6 +252,9 @@ void spindle_set_speed(uint16_t pwm_value)
       sys.spindle_speed = rpm;
       pwm_value = floor((rpm - settings.rpm_min) * spindle_pwm_gradient) + SPINDLE_PWM_MIN_VALUE;
     }
+    #ifdef SEPARATE_SPINDLE_LASER_PIN
+      }
+    #endif
     #ifndef INVERT_SPINDLE_PWM_VALUES
       return(pwm_value);
     #else

@@ -145,10 +145,8 @@
 
 #ifdef USE_OUTPUT_PWM
   // Modal Group M11: Analog output (PWM) (non modal)
-  #define NON_MODAL_ANALOG_SYNC_ON       162 // M162
-  #define NON_MODAL_ANALOG_SYNC_OFF      163 // M163
-  #define NON_MODAL_ANALOG_IMMEDIATE_ON  164 // M164
-  #define NON_MODAL_ANALOG_IMMEDIATE_OFF 165 // M165
+  #define NON_MODAL_ANALOG_OUTPUT_SYNC       67 // M162
+  #define NON_MODAL_ANALOG_OUTPUT_IMMEDIATE  68 // M164
 #endif
 // Modal Group G12: Active work coordinate system
 // N/A: Stores coordinate system value (54-59) to change to.
@@ -175,7 +173,7 @@
 #define DWORD_V 17
 #define DWORD_W 18
 #ifdef USE_OUTPUT_PWM
-  #define DWORD_O 19
+  #define DWORD_Q 19
 #endif
 // Define g-code parser position updating flags
 #define GC_UPDATE_POS_TARGET   0 // Must be zero
@@ -233,7 +231,7 @@ typedef struct {
   uint8_t l;       // G10 or canned cycles parameters
   int32_t n;       // Line number
   #ifdef USE_OUTPUT_PWM
-    float o;         // Output PWM valus
+    float q;         // Output PWM valus
   #endif
   float p;         // G10 or dwell parameters
   float r;         // Arc radius

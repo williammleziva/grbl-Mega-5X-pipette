@@ -103,7 +103,10 @@ typedef struct {
 
   float rpm_max;
   float rpm_min;
-
+  #ifdef SEPARATE_SPINDLE_LASER_PIN
+    float laser_max;
+    float laser_min;
+  #endif
   #ifdef USE_OUTPUT_PWM
     float volts_max;
     float volts_min;
