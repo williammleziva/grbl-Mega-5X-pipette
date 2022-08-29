@@ -75,9 +75,9 @@
   #define STEP_PIN(i) _PIN(STEP_PORT_##i)
 
   // Define step direction output pins.
-  #define DIRECTION_PORT_0 A
-  #define DIRECTION_PORT_1 A
-  #define DIRECTION_PORT_2 C
+  #define DIRECTION_PORT_0 D
+  #define DIRECTION_PORT_1 C
+  #define DIRECTION_PORT_2 L
   #if N_AXIS > 3
     #define DIRECTION_PORT_3 C // Axis number 4 
   #endif
@@ -87,8 +87,8 @@
   #if N_AXIS > 5
     #define DIRECTION_PORT_5 C // Axis number 6 
   #endif
-  #define DIRECTION_BIT_0 4 // X Dir - 
-  #define DIRECTION_BIT_1 0 // Y Dir - 
+  #define DIRECTION_BIT_0 7 // X Dir - 
+  #define DIRECTION_BIT_1 3 // Y Dir - 
   #define DIRECTION_BIT_2 7 // Z Dir - 
   #if N_AXIS > 3
     #define DIRECTION_BIT_3 3 // Axis number 4 Step -
@@ -138,7 +138,7 @@
 
   // Define homing/hard limit switch input pins and limit interrupt vectors.
   #define MIN_LIMIT_PORT_0 A
-  #define MIN_LIMIT_PORT_1 C
+  #define MIN_LIMIT_PORT_1 A
   #define MIN_LIMIT_PORT_2 C
   #if N_AXIS > 3
     #define MIN_LIMIT_PORT_3 C
@@ -150,7 +150,7 @@
     #define MIN_LIMIT_PORT_5 C // (Ramps Aux-1 D57)
   #endif
   #define MIN_LIMIT_BIT_0 1 // X Limit Min -
-  #define MIN_LIMIT_BIT_1 0 // Y Limit Min -
+  #define MIN_LIMIT_BIT_1 3 // Y Limit Min -
   #define MIN_LIMIT_BIT_2 6 // Z Limit Min -
   #if N_AXIS > 3
     #define MIN_LIMIT_BIT_3 2 // Axis number 4 : 
@@ -167,9 +167,9 @@
   #define MIN_LIMIT_PORT(i) _PORT(MIN_LIMIT_PORT_##i)
   #define MIN_LIMIT_PIN(i) _PIN(MIN_LIMIT_PORT_##i)
 
-  #define MAX_LIMIT_PORT_0 B
-  #define MAX_LIMIT_PORT_1 B
-  #define MAX_LIMIT_PORT_2 B
+  #define MAX_LIMIT_PORT_0 A
+  #define MAX_LIMIT_PORT_1 A
+  #define MAX_LIMIT_PORT_2 C
   #if N_AXIS > 3
     #define MAX_LIMIT_PORT_3 B
   #endif
@@ -179,9 +179,9 @@
   #if N_AXIS > 5
     #define MAX_LIMIT_PORT_5 B // (Ramps Aux-3 D58)
   #endif
-  #define MAX_LIMIT_BIT_0 7 // X Limit Max - Pin D2
-  #define MAX_LIMIT_BIT_1 7 // Y Limit Max - Pin D15
-  #define MAX_LIMIT_BIT_2 7 // Z Limit Max - Pin D19
+  #define MAX_LIMIT_BIT_0 1 // X Limit Max - Pin D2
+  #define MAX_LIMIT_BIT_1 3 // Y Limit Max - Pin D15
+  #define MAX_LIMIT_BIT_2 6 // Z Limit Max - Pin D19
   #if N_AXIS > 3
     #define MAX_LIMIT_BIT_3 7 // Axis number 4 : RAMPS AUX2 pin D40
   #endif
